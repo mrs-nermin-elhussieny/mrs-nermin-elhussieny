@@ -165,8 +165,6 @@
 
 <script>
     const ADMIN_PASSWORD = "nermin2535";
-    
-    // تم ربط مفاتيحكِ الخاصة بالسحابة مباشرة
     const BIN_ID = "6a898156f5f4af5e2934ddeb";
     const API_KEY = "$2a$10$SQSCbL578Jwl71gYZypgTutGVUFF2LuIKGiSIkOIufrJodN6/U96a";
 
@@ -182,10 +180,13 @@
     async function loadCloudData() {
         try {
             let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { "X-Master-Key": API_KEY }
+                headers: { 
+                    "X-Master-Key": API_KEY,
+                    "X-Bin-Meta": "false"
+                }
             });
-            let json = await res.json();
-            globalData = json.record || {};
+            globalData = await res.json();
+            if (globalData.record) globalData = globalData.record;
         } catch (e) {
             console.error("خطأ في التحميل", e);
         }
@@ -211,7 +212,7 @@
         const errorDiv = document.getElementById('searchError');
         const resultCard = document.getElementById('resultCard');
 
-        if (globalData[code]) {
+        if (globalData && globalData[code]) {
             const st = globalData[code];
             document.getElementById('resCode').innerText = code;
             document.getElementById('resName').innerText = st.name;
@@ -267,10 +268,15 @@
     async function saveStudentData() {
         const code = document.getElementById('admCode').value.trim();
         const name = document.getElementById('admName').value.trim();
-        if (!code || !name) return;
+        if (!code || !name) {
+            alert("يرجى إدخال اسم الطالب والكود أولاً");
+            return;
+        }
 
         const btn = document.getElementById('saveBtn');
         btn.innerText = "جاري الحفظ سحابياً... ⏳";
+
+        await loadCloudData();
 
         globalData[code] = {
             name: name,
@@ -291,17 +297,28 @@
             l4: document.getElementById('admL4').value || "0"
         };
 
-        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                "X-Master-Key": API_KEY
-            },
-            body: JSON.stringify(globalData)
-        });
+        try {
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": API_KEY
+                },
+                body: JSON.stringify(globalData)
+            });
 
-        btn.innerText = "حفظ التعديل سحابياً ☁️";
-        document.getElementById('admSuccess').classList.remove('hidden');
+            if (res.ok) {
+                btn.innerText = "حفظ التعديل سحابياً ☁️";
+                document.getElementById('admSuccess').classList.remove('hidden');
+                setTimeout(() => { document.getElementById('admSuccess').classList.add('hidden'); }, 3000);
+            } else {
+                btn.innerText = "حفظ التعديل سحابياً ☁️";
+                alert("حدث خطأ أثناء الحفظ، يرجى المحاولة مرة أخرى.");
+            }
+        } catch (err) {
+            btn.innerText = "حفظ التعديل سحابياً ☁️";
+            alert("تعذر الاتصال بالسحابة، تحقق من الاتصال بالإنترنت.");
+        }
     }
 
     let clicks = 0;
@@ -311,5 +328,5 @@
     });
 </script>
 </body>
-                </html>
+    </html>
     
