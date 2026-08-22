@@ -93,10 +93,10 @@
 
         .input-group label {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
         }
 
-        .input-field {
+        .input-field, .select-field {
             width: 100%;
             padding: 12px;
             border: 1px solid #dddddd;
@@ -104,6 +104,7 @@
             font-size: 15px;
             text-align: center;
             outline: none;
+            background: white;
         }
 
         .btn {
@@ -235,19 +236,6 @@
             margin-top: 8px;
         }
 
-        .admin-toggle {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 13px;
-        }
-
-        .admin-toggle a {
-            color: var(--primary-green);
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
         .form-row {
             display: flex;
             gap: 10px;
@@ -264,18 +252,18 @@
 <div class="container">
     <!-- Header -->
     <div class="header-card">
-        <h1 id="headerTitle">تقرير متابعة الطلاب</h1>
-        <p id="headerSub">نظام استعلام درجات ومتابعة الطلاب الشهري</p>
+        <h1>تقرير متابعة الطلاب</h1>
+        <p>نظام استعلام درجات ومتابعة الطلاب الشهري</p>
         <div class="teacher-name">الأستاذة / نرمين الحسيني</div>
         <div class="year-badge">العام الدراسي 2026/2027</div>
     </div>
 
-    <!-- ================= VIEW 1: STUDENT SEARCH ================= -->
+    <!-- ================= VIEW 1: STUDENT SEARCH (ولياء الأمور) ================= -->
     <div id="studentView">
         <div class="card">
             <div class="input-group">
                 <label for="studentCode">أدخل كود الطالب</label>
-                <input type="number" id="studentCode" class="input-field" placeholder="مثال: 5131">
+                <input type="number" id="studentCode" class="input-field" placeholder="أدخل كود الطالب الخاص بك">
                 <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
                 <div id="searchError" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
             </div>
@@ -285,14 +273,14 @@
         <div id="resultCard" class="card hidden" style="margin-top: 15px;">
             <div class="student-badge">
                 <div class="title">كود الطالب</div>
-                <div class="code" id="resCode">5131</div>
+                <div class="code" id="resCode">3123</div>
             </div>
 
-            <div class="student-name" id="resName">حسن محمد حسن</div>
+            <div class="student-name" id="resName">-</div>
             
             <div>
-                <span class="tag" id="resClass">الصف الخامس الابتدائي</span><br>
-                <span class="tag yellow" id="resGroup">مجموعة سبت وتلات الساعة 7 وربع</span>
+                <span class="tag" id="resClass">-</span><br>
+                <span class="tag yellow" id="resGroup">-</span>
             </div>
 
             <div class="score-box">
@@ -323,20 +311,16 @@
                 </div>
             </div>
         </div>
-
-        <div class="admin-toggle">
-            <a onclick="showAdminLogin()">🔐 دخول المعلمة (لوحة التحكم)</a>
-        </div>
     </div>
 
-    <!-- ================= VIEW 2: ADMIN LOGIN ================= -->
+    <!-- ================= VIEW 2: ADMIN LOGIN (مخفي عن ولي الأمر) ================= -->
     <div id="adminLoginView" class="card hidden">
         <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">دفتر متابعة المعلمة 📝</h2>
         <div class="input-group">
-            <label for="adminPass">كلمة المرور الخاصة بكِ:</label>
+            <label for="adminPass">كلمة المرور الخاصة بالمصرح لهم فقط:</label>
             <input type="password" id="adminPass" class="input-field" placeholder="أدخلي كلمة السر">
             <button class="btn btn-admin" onclick="checkAdminPassword()">تسجيل الدخول</button>
-            <button class="btn btn-secondary" onclick="showStudentSearch()">العودة لصفحة الطلاب</button>
+            <button class="btn btn-secondary" onclick="showStudentSearch()">العودة للموقع الرئيسي</button>
             <div id="loginError" class="error-msg hidden">كلمة المرور غير صحيحة!</div>
         </div>
     </div>
@@ -346,17 +330,25 @@
         <div class="card">
             <h3 style="margin-bottom: 15px; color: var(--primary-green);">إضافة أو تعديل طالب ✏️</h3>
             <div class="input-group">
-                <label>كود الطالب</label>
-                <input type="number" id="admCode" class="input-field" placeholder="مثال: 5131">
-                
-                <label>اسم الطالب</label>
-                <input type="text" id="admName" class="input-field" placeholder="الاسم الثلاثي">
-
                 <label>الصف الدراسي</label>
-                <input type="text" id="admClass" class="input-field" placeholder="مثال: الصف الخامس الابتدائي">
+                <select id="admClass" class="select-field" onchange="updateGroupOptions()">
+                    <option value="">اختر الصف الدراسي</option>
+                    <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي (بداية الأكواد: 3123)</option>
+                    <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي (بداية الأكواد: 4123)</option>
+                    <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي (بداية الأكواد: 5123)</option>
+                    <option value="الصف السادس الابتدائي">الصف السادس الابتدائي (بداية الأكواد: 6123)</option>
+                </select>
 
                 <label>المجموعة</label>
-                <input type="text" id="admGroup" class="input-field" placeholder="مثال: سبت وتلات الساعة 7">
+                <select id="admGroup" class="select-field">
+                    <option value="">اختر الصف أولاً</option>
+                </select>
+
+                <label>كود الطالب</label>
+                <input type="number" id="admCode" class="input-field" placeholder="أدخلي الكود">
+
+                <label>اسم الطالب</label>
+                <input type="text" id="admName" class="input-field" placeholder="الاسم الثلاثي">
 
                 <label>درجات الحصص (من 10)</label>
                 <div class="form-row">
@@ -369,11 +361,11 @@
                 </div>
 
                 <label>المجموع الكلي للشهر (من 100)</label>
-                <input type="number" id="admTotal" class="input-field" placeholder="مثال: 85">
+                <input type="number" id="admTotal" class="input-field" placeholder="مثال: 95">
 
                 <button class="btn btn-admin" onclick="saveStudentData()">حفظ البيانات 💾</button>
                 <div id="admSuccess" class="success-msg hidden">تم حفظ بيانات الطالب بنجاح!</div>
-                <div id="admError" class="error-msg hidden">يرجى ملء جميع البيانات الأساسية</div>
+                <div id="admError" class="error-msg hidden">يرجى ملء جميع البيانات الأساسية والكود الصحيح</div>
             </div>
         </div>
 
@@ -383,25 +375,79 @@
 </div>
 
 <script>
-    // كلمة المرور الافتراضية للوحة المعلمة (يمكنك تغييرها هنا)
-    const ADMIN_PASSWORD = "123";
+    // كلمة المرور الخاصة بكِ فقط
+    const ADMIN_PASSWORD = "nermin2535";
 
-    // البيانات الافتراضية
+    // قائمة المجموعات حسب الصفوف
+    const groupsByClass = {
+        "الصف الثالث الابتدائي": [
+            "مجموعة السبت والثلاثاء الساعة 5"
+        ],
+        "الصف الرابع الابتدائي": [
+            "مجموعة الأحد والأربعاء الساعة 6",
+            "مجموعة الاثنين والخميس الساعة 7 وربع"
+        ],
+        "الصف الخامس الابتدائي": [
+            "مجموعة السبت والثلاثاء الساعة 6",
+            "مجموعة السبت والثلاثاء الساعة 7 وربع",
+            "مجموعة الأحد والأربعاء الساعة 5"
+        ],
+        "الصف السادس الابتدائي": [
+            "مجموعة الأحد والأربعاء الساعة 7 وربع"
+        ]
+    };
+
+    // بيانات أولية للبدء
     const defaultData = {
-        "5131": {
-            name: "حسن محمد حسن",
+        "3123": {
+            name: "طالب تجريبي (الصف الثالث)",
+            grade: "الصف الثالث الابتدائي",
+            group: "مجموعة السبت والثلاثاء الساعة 5",
+            total: "100.0",
+            percent: "100%",
+            l1: "10", l2: "10", l3: "10", l4: "10"
+        },
+        "4123": {
+            name: "طالب تجريبي (الصف الرابع)",
+            grade: "الصف الرابع الابتدائي",
+            group: "مجموعة الأحد والأربعاء الساعة 6",
+            total: "90.0",
+            percent: "90%",
+            l1: "9", l2: "9", l3: "9", l4: "9"
+        },
+        "5123": {
+            name: "طالب تجريبي (الصف الخامس)",
             grade: "الصف الخامس الابتدائي",
-            group: "مجموعة سبت وتلات الساعة 7 وربع",
+            group: "مجموعة السبت والثلاثاء الساعة 6",
             total: "85.0",
             percent: "85%",
-            l1: "9",
-            l2: "8",
-            l3: "9",
-            l4: "8"
+            l1: "8", l2: "9", l3: "8", l4: "9"
+        },
+        "6123": {
+            name: "طالب تجريبي (الصف السادس)",
+            grade: "الصف السادس الابتدائي",
+            group: "مجموعة الأحد والأربعاء الساعة 7 وربع",
+            total: "95.0",
+            percent: "95%",
+            l1: "10", l2: "9", l3: "10", l4: "9"
         }
     };
 
-    // تحميل البيانات من الذاكرة المحلية أو استخدام الافتراضية
+    function updateGroupOptions() {
+        const classSelect = document.getElementById('admClass').value;
+        const groupSelect = document.getElementById('admGroup');
+        groupSelect.innerHTML = '<option value="">اختر المجموعة</option>';
+
+        if (groupsByClass[classSelect]) {
+            groupsByClass[classSelect].forEach(group => {
+                const opt = document.createElement('option');
+                opt.value = group;
+                opt.textContent = group;
+                groupSelect.appendChild(opt);
+            });
+        }
+    }
+
     function getStoredData() {
         const stored = localStorage.getItem('nermin_students_db');
         if (stored) {
@@ -412,12 +458,10 @@
         }
     }
 
-    // حفظ البيانات
     function saveDataToStorage(data) {
         localStorage.setItem('nermin_students_db', JSON.stringify(data));
     }
 
-    // البحث عن طالب
     function searchStudent() {
         const code = document.getElementById('studentCode').value.trim();
         const errorDiv = document.getElementById('searchError');
@@ -446,7 +490,6 @@
         }
     }
 
-    // التنقل بين الصفحات
     function showAdminLogin() {
         document.getElementById('studentView').classList.add('hidden');
         document.getElementById('adminLoginView').classList.remove('hidden');
@@ -459,7 +502,6 @@
         document.getElementById('adminDashboardView').classList.add('hidden');
     }
 
-    // التحقق من كلمة السر
     function checkAdminPassword() {
         const pass = document.getElementById('adminPass').value;
         const err = document.getElementById('loginError');
@@ -473,12 +515,11 @@
         }
     }
 
-    // حفظ أو تعديل طالب من لوحة التحكم
     function saveStudentData() {
         const code = document.getElementById('admCode').value.trim();
         const name = document.getElementById('admName').value.trim();
-        const grade = document.getElementById('admClass').value.trim();
-        const group = document.getElementById('admGroup').value.trim();
+        const grade = document.getElementById('admClass').value;
+        const group = document.getElementById('admGroup').value;
         const l1 = document.getElementById('admL1').value.trim() || "0";
         const l2 = document.getElementById('admL2').value.trim() || "0";
         const l3 = document.getElementById('admL3').value.trim() || "0";
@@ -488,7 +529,7 @@
         const err = document.getElementById('admError');
         const succ = document.getElementById('admSuccess');
 
-        if (!code || !name) {
+        if (!code || !name || !grade || !group) {
             err.classList.remove('hidden');
             succ.classList.add('hidden');
             return;
@@ -497,8 +538,8 @@
         const db = getStoredData();
         db[code] = {
             name: name,
-            grade: grade || "غير محدد",
-            group: group || "غير محدد",
+            grade: grade,
+            group: group,
             total: total,
             percent: total + "%",
             l1: l1,
@@ -512,13 +553,22 @@
         err.classList.add('hidden');
         succ.classList.remove('hidden');
 
-        // تفريغ الحقول
         setTimeout(() => {
             succ.classList.add('hidden');
         }, 3000);
     }
+
+    // طريقة خاصة وسرية للدخول لوحة التحكم بدون إظهار أي رابط لولي الأمر
+    // يتم الضغط 5 ضغطات متتالية على عنوان التقرير (Header) للفتح
+    let headerClicks = 0;
+    document.querySelector('.header-card').addEventListener('click', function() {
+        headerClicks++;
+        if (headerClicks >= 5) {
+            showAdminLogin();
+            headerClicks = 0;
+        }
+    });
 </script>
 
 </body>
-    </html>
-    
+</html>
