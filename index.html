@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقرير درجات الطلاب</title>
+    <title>تقرير درجات الطلاب - الأستاذة نرمين الحسيني</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -50,30 +50,30 @@
         }
 
         .header-card h1 {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             margin-bottom: 5px;
         }
 
         .header-card p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
         }
 
         .teacher-name {
             color: var(--accent-yellow);
             font-weight: 700;
-            margin-top: 10px;
-            font-size: 16px;
+            margin-top: 8px;
+            font-size: 15px;
         }
 
         .year-badge {
             display: inline-block;
             background-color: rgba(255, 255, 255, 0.15);
-            padding: 6px 14px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 13px;
-            margin-top: 12px;
+            font-size: 12px;
+            margin-top: 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -93,15 +93,15 @@
 
         .input-group label {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .input-field {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: 1px solid #dddddd;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             text-align: center;
             outline: none;
         }
@@ -110,13 +110,22 @@
             background-color: var(--primary-green);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
             transition: 0.2s;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .btn-admin {
+            background-color: #28a745;
         }
 
         .btn:active {
@@ -125,7 +134,7 @@
 
         .student-badge {
             background-color: var(--card-yellow);
-            padding: 12px;
+            padding: 10px 15px;
             border-radius: 12px;
             display: inline-block;
             text-align: center;
@@ -133,21 +142,21 @@
         }
 
         .student-badge .title {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--primary-green);
             font-weight: bold;
         }
 
         .student-badge .code {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--primary-green);
         }
 
         .student-name {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .tag {
@@ -155,11 +164,11 @@
             align-items: center;
             background-color: var(--light-green);
             color: var(--primary-green);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 15px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .tag.yellow {
@@ -170,13 +179,13 @@
             background-color: var(--primary-green);
             color: white;
             border-radius: 18px;
-            padding: 20px;
+            padding: 18px;
             text-align: center;
             margin-top: 15px;
         }
 
         .score-num {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: 800;
             margin: 5px 0;
         }
@@ -192,7 +201,7 @@
             background: #fafafa;
             border: 1px solid #eee;
             border-radius: 12px;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
         }
 
@@ -202,21 +211,51 @@
         }
 
         .lesson-card .val {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--primary-green);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .error-msg {
             color: #d9534f;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
             margin-top: 8px;
+        }
+
+        .success-msg {
+            color: #28a745;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .admin-toggle {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .admin-toggle a {
+            color: var(--primary-green);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-row input {
+            flex: 1;
         }
     </style>
 </head>
@@ -225,69 +264,130 @@
 <div class="container">
     <!-- Header -->
     <div class="header-card">
-        <h1>تقرير متابعة الطلاب</h1>
-        <p>نظام استعلام درجات ومتابعة الطلاب الشهري</p>
+        <h1 id="headerTitle">تقرير متابعة الطلاب</h1>
+        <p id="headerSub">نظام استعلام درجات ومتابعة الطلاب الشهري</p>
         <div class="teacher-name">الأستاذة / نرمين الحسيني</div>
         <div class="year-badge">العام الدراسي 2026/2027</div>
     </div>
 
-    <!-- Search Section -->
-    <div class="card">
-        <div class="input-group">
-            <label for="studentCode">أدخل كود الطالب</label>
-            <input type="number" id="studentCode" class="input-field" placeholder="مثال: 5131">
-            <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
-            <div id="error" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
-        </div>
-    </div>
-
-    <!-- Result Section -->
-    <div id="resultCard" class="card hidden">
-        <div class="student-badge">
-            <div class="title">كود الطالب</div>
-            <div class="code" id="resCode">5131</div>
+    <!-- ================= VIEW 1: STUDENT SEARCH ================= -->
+    <div id="studentView">
+        <div class="card">
+            <div class="input-group">
+                <label for="studentCode">أدخل كود الطالب</label>
+                <input type="number" id="studentCode" class="input-field" placeholder="مثال: 5131">
+                <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
+                <div id="searchError" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
+            </div>
         </div>
 
-        <div class="student-name" id="resName">حسن محمد حسن</div>
-        
-        <div>
-            <span class="tag" id="resClass">الصف الخامس الابتدائي</span><br>
-            <span class="tag yellow" id="resGroup">مجموعة سبت وتلات الساعة 7 وربع</span>
-        </div>
+        <!-- Result Section -->
+        <div id="resultCard" class="card hidden" style="margin-top: 15px;">
+            <div class="student-badge">
+                <div class="title">كود الطالب</div>
+                <div class="code" id="resCode">5131</div>
+            </div>
 
-        <div class="score-box">
-            <div style="font-size: 13px;">مجموع الشهر من 100</div>
-            <div class="score-num" id="resTotal">0.0</div>
-            <div style="font-size: 13px;" id="resPercent">نسبة الدرجات: 0.0%</div>
-        </div>
+            <div class="student-name" id="resName">حسن محمد حسن</div>
+            
+            <div>
+                <span class="tag" id="resClass">الصف الخامس الابتدائي</span><br>
+                <span class="tag yellow" id="resGroup">مجموعة سبت وتلات الساعة 7 وربع</span>
+            </div>
 
-        <div style="margin-top: 15px;">
-            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">درجة شرائح الحصة (من 10)</div>
-            <div class="grid-2">
-                <div class="lesson-card">
-                    <div class="title">الحصة 1</div>
-                    <div class="val" id="l1">0</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 2</div>
-                    <div class="val" id="l2">0</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 3</div>
-                    <div class="val" id="l3">0</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 4</div>
-                    <div class="val" id="l4">0</div>
+            <div class="score-box">
+                <div style="font-size: 13px;">مجموع الشهر من 100</div>
+                <div class="score-num" id="resTotal">0.0</div>
+                <div style="font-size: 13px;" id="resPercent">نسبة الدرجات: 0.0%</div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">درجة شرائح الحصة (من 10)</div>
+                <div class="grid-2">
+                    <div class="lesson-card">
+                        <div class="title">الحصة 1</div>
+                        <div class="val" id="l1">0</div>
+                    </div>
+                    <div class="lesson-card">
+                        <div class="title">الحصة 2</div>
+                        <div class="val" id="l2">0</div>
+                    </div>
+                    <div class="lesson-card">
+                        <div class="title">الحصة 3</div>
+                        <div class="val" id="l3">0</div>
+                    </div>
+                    <div class="lesson-card">
+                        <div class="title">الحصة 4</div>
+                        <div class="val" id="l4">0</div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="admin-toggle">
+            <a onclick="showAdminLogin()">🔐 دخول المعلمة (لوحة التحكم)</a>
+        </div>
     </div>
+
+    <!-- ================= VIEW 2: ADMIN LOGIN ================= -->
+    <div id="adminLoginView" class="card hidden">
+        <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">دفتر متابعة المعلمة 📝</h2>
+        <div class="input-group">
+            <label for="adminPass">كلمة المرور الخاصة بكِ:</label>
+            <input type="password" id="adminPass" class="input-field" placeholder="أدخلي كلمة السر">
+            <button class="btn btn-admin" onclick="checkAdminPassword()">تسجيل الدخول</button>
+            <button class="btn btn-secondary" onclick="showStudentSearch()">العودة لصفحة الطلاب</button>
+            <div id="loginError" class="error-msg hidden">كلمة المرور غير صحيحة!</div>
+        </div>
+    </div>
+
+    <!-- ================= VIEW 3: ADMIN DASHBOARD ================= -->
+    <div id="adminDashboardView" class="hidden">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary-green);">إضافة أو تعديل طالب ✏️</h3>
+            <div class="input-group">
+                <label>كود الطالب</label>
+                <input type="number" id="admCode" class="input-field" placeholder="مثال: 5131">
+                
+                <label>اسم الطالب</label>
+                <input type="text" id="admName" class="input-field" placeholder="الاسم الثلاثي">
+
+                <label>الصف الدراسي</label>
+                <input type="text" id="admClass" class="input-field" placeholder="مثال: الصف الخامس الابتدائي">
+
+                <label>المجموعة</label>
+                <input type="text" id="admGroup" class="input-field" placeholder="مثال: سبت وتلات الساعة 7">
+
+                <label>درجات الحصص (من 10)</label>
+                <div class="form-row">
+                    <input type="number" id="admL1" class="input-field" placeholder="حصة 1">
+                    <input type="number" id="admL2" class="input-field" placeholder="حصة 2">
+                </div>
+                <div class="form-row">
+                    <input type="number" id="admL3" class="input-field" placeholder="حصة 3">
+                    <input type="number" id="admL4" class="input-field" placeholder="حصة 4">
+                </div>
+
+                <label>المجموع الكلي للشهر (من 100)</label>
+                <input type="number" id="admTotal" class="input-field" placeholder="مثال: 85">
+
+                <button class="btn btn-admin" onclick="saveStudentData()">حفظ البيانات 💾</button>
+                <div id="admSuccess" class="success-msg hidden">تم حفظ بيانات الطالب بنجاح!</div>
+                <div id="admError" class="error-msg hidden">يرجى ملء جميع البيانات الأساسية</div>
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="showStudentSearch()" style="margin-top: 15px;">الخروج من لوحة التحكم</button>
+    </div>
+
 </div>
 
 <script>
-    // قاعدة بيانات الطلاب (يمكنك إضافة أي عدد من الطلاب هنا)
-    const studentsData = {
+    // كلمة المرور الافتراضية للوحة المعلمة (يمكنك تغييرها هنا)
+    const ADMIN_PASSWORD = "123";
+
+    // البيانات الافتراضية
+    const defaultData = {
         "5131": {
             name: "حسن محمد حسن",
             grade: "الصف الخامس الابتدائي",
@@ -298,27 +398,34 @@
             l2: "8",
             l3: "9",
             l4: "8"
-        },
-        "1002": {
-            name: "أحمد علي محمود",
-            grade: "الصف السادس الابتدائي",
-            group: "مجموعة أحد وأربعاء الساعة 5",
-            total: "95.0",
-            percent: "95%",
-            l1: "10",
-            l2: "9",
-            l3: "10",
-            l4: "9"
         }
     };
 
+    // تحميل البيانات من الذاكرة المحلية أو استخدام الافتراضية
+    function getStoredData() {
+        const stored = localStorage.getItem('nermin_students_db');
+        if (stored) {
+            return JSON.parse(stored);
+        } else {
+            localStorage.setItem('nermin_students_db', JSON.stringify(defaultData));
+            return defaultData;
+        }
+    }
+
+    // حفظ البيانات
+    function saveDataToStorage(data) {
+        localStorage.setItem('nermin_students_db', JSON.stringify(data));
+    }
+
+    // البحث عن طالب
     function searchStudent() {
         const code = document.getElementById('studentCode').value.trim();
-        const errorDiv = document.getElementById('error');
+        const errorDiv = document.getElementById('searchError');
         const resultCard = document.getElementById('resultCard');
+        const db = getStoredData();
 
-        if (studentsData[code]) {
-            const student = studentsData[code];
+        if (db[code]) {
+            const student = db[code];
             document.getElementById('resCode').innerText = code;
             document.getElementById('resName').innerText = student.name;
             document.getElementById('resClass').innerText = student.grade;
@@ -338,8 +445,80 @@
             errorDiv.classList.remove('hidden');
         }
     }
+
+    // التنقل بين الصفحات
+    function showAdminLogin() {
+        document.getElementById('studentView').classList.add('hidden');
+        document.getElementById('adminLoginView').classList.remove('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    function showStudentSearch() {
+        document.getElementById('studentView').classList.remove('hidden');
+        document.getElementById('adminLoginView').classList.add('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    // التحقق من كلمة السر
+    function checkAdminPassword() {
+        const pass = document.getElementById('adminPass').value;
+        const err = document.getElementById('loginError');
+
+        if (pass === ADMIN_PASSWORD) {
+            err.classList.add('hidden');
+            document.getElementById('adminLoginView').classList.add('hidden');
+            document.getElementById('adminDashboardView').classList.remove('hidden');
+        } else {
+            err.classList.remove('hidden');
+        }
+    }
+
+    // حفظ أو تعديل طالب من لوحة التحكم
+    function saveStudentData() {
+        const code = document.getElementById('admCode').value.trim();
+        const name = document.getElementById('admName').value.trim();
+        const grade = document.getElementById('admClass').value.trim();
+        const group = document.getElementById('admGroup').value.trim();
+        const l1 = document.getElementById('admL1').value.trim() || "0";
+        const l2 = document.getElementById('admL2').value.trim() || "0";
+        const l3 = document.getElementById('admL3').value.trim() || "0";
+        const l4 = document.getElementById('admL4').value.trim() || "0";
+        const total = document.getElementById('admTotal').value.trim() || "0";
+
+        const err = document.getElementById('admError');
+        const succ = document.getElementById('admSuccess');
+
+        if (!code || !name) {
+            err.classList.remove('hidden');
+            succ.classList.add('hidden');
+            return;
+        }
+
+        const db = getStoredData();
+        db[code] = {
+            name: name,
+            grade: grade || "غير محدد",
+            group: group || "غير محدد",
+            total: total,
+            percent: total + "%",
+            l1: l1,
+            l2: l2,
+            l3: l3,
+            l4: l4
+        };
+
+        saveDataToStorage(db);
+
+        err.classList.add('hidden');
+        succ.classList.remove('hidden');
+
+        // تفريغ الحقول
+        setTimeout(() => {
+            succ.classList.add('hidden');
+        }, 3000);
+    }
 </script>
 
 </body>
-  </html>
-  
+    </html>
+    
