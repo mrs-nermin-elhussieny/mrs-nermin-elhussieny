@@ -6,15 +6,7 @@
     <title>تقرير درجات الطلاب - الأستاذة نرمين الحسيني</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #f7f4eb;
-            --primary-green: #0b4f42;
-            --light-green: #eef7f4;
-            --card-yellow: #fef8dd;
-            --accent-yellow: #eedf9b;
-            --text-dark: #2c3e50;
-        }
-
+        :root { --bg-color: #f7f4eb; --primary-green: #0b4f42; --light-green: #eef7f4; --card-yellow: #fef8dd; --accent-yellow: #eedf9b; --text-dark: #2c3e50; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); padding: 15px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 15px; }
@@ -27,7 +19,6 @@
         .btn { background-color: var(--primary-green); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; }
         .btn-secondary { background-color: #6c757d; margin-top: 10px; }
         .btn-admin { background-color: #28a745; }
-        .btn-export { background-color: #007bff; margin-top: 10px; }
         .student-badge { background-color: var(--card-yellow); padding: 10px 15px; border-radius: 12px; text-align: center; }
         .tag { display: inline-block; background-color: var(--light-green); color: var(--primary-green); padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; }
         .tag.yellow { background-color: var(--card-yellow); }
@@ -42,7 +33,7 @@
         .section-title { font-weight: bold; margin-top: 15px; font-size: 14px; color: var(--primary-green); border-bottom: 2px solid var(--light-green); }
         .hidden { display: none !important; }
         .error-msg { color: #d9534f; font-size: 13px; text-align: center; }
-        .success-msg { color: #28a745; font-size: 13px; text-align: center; }
+        .success-msg { color: #28a745; font-size: 13px; text-align: center; font-weight: bold; }
         .form-row { display: flex; gap: 10px; }
         .form-row input { flex: 1; }
     </style>
@@ -164,9 +155,8 @@
                     <input type="number" id="admL4" class="input-field" placeholder="ح4">
                 </div>
 
-                <button class="btn btn-admin" onclick="saveStudentData()">حفظ الطالب مؤقتاً 💾</button>
-                <button class="btn btn-export" onclick="exportDataFile()">تصدير نسخة البيانات للرفع 📥</button>
-                <div id="admSuccess" class="success-msg hidden">تم الحفظ! اضغطي "تصدير" لتحديث باقي الأجهزة.</div>
+                <button class="btn btn-admin" id="saveBtn" onclick="saveStudentData()">حفظ التعديل سحابياً ☁️</button>
+                <div id="admSuccess" class="success-msg hidden">تم الحفظ فوراً وظهرت للجميع! ✅</div>
             </div>
         </div>
         <button class="btn btn-secondary" onclick="showStudentSearch()">الخروج</button>
@@ -175,6 +165,10 @@
 
 <script>
     const ADMIN_PASSWORD = "nermin2535";
+    
+    // تم ربط مفاتيحكِ الخاصة بالسحابة مباشرة
+    const BIN_ID = "6a898156f5f4af5e2934ddeb";
+    const API_KEY = "$2a$10$SQSCbL578Jwl71gYZypgTutGVUFF2LuIKGiSIkOIufrJodN6/U96a";
 
     const groupsByClass = {
         "الصف الثالث الابتدائي": ["مجموعة السبت والثلاثاء الساعة 5"],
@@ -183,13 +177,20 @@
         "الصف السادس الابتدائي": ["مجموعة الأحد والأربعاء الساعة 7 وربع"]
     };
 
-    let globalData = {
-        "3123": {
-            name: "طالب تجريبي", grade: "الصف الثالث الابتدائي", group: "مجموعة السبت والثلاثاء الساعة 5",
-            payment: "paid", w1: "20", w2: "19", w3: "20", w4: "18", weeklyFinal: "19",
-            unit: "20", monthlyExam: "48", finalGrade: "ممتاز", l1: "10", l2: "10", l3: "9", l4: "10"
+    let globalData = {};
+
+    async function loadCloudData() {
+        try {
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                headers: { "X-Master-Key": API_KEY }
+            });
+            let json = await res.json();
+            globalData = json.record || {};
+        } catch (e) {
+            console.error("خطأ في التحميل", e);
         }
-    };
+    }
+    loadCloudData();
 
     function updateGroupOptions() {
         const classSelect = document.getElementById('admClass').value;
@@ -204,7 +205,8 @@
         }
     }
 
-    function searchStudent() {
+    async function searchStudent() {
+        await loadCloudData();
         const code = document.getElementById('studentCode').value.trim();
         const errorDiv = document.getElementById('searchError');
         const resultCard = document.getElementById('resultCard');
@@ -262,10 +264,13 @@
         }
     }
 
-    function saveStudentData() {
+    async function saveStudentData() {
         const code = document.getElementById('admCode').value.trim();
         const name = document.getElementById('admName').value.trim();
         if (!code || !name) return;
+
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "جاري الحفظ سحابياً... ⏳";
 
         globalData[code] = {
             name: name,
@@ -286,17 +291,17 @@
             l4: document.getElementById('admL4').value || "0"
         };
 
-        document.getElementById('admSuccess').classList.remove('hidden');
-    }
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": API_KEY
+            },
+            body: JSON.stringify(globalData)
+        });
 
-    function exportDataFile() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalData, null, 4));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "students.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+        btn.innerText = "حفظ التعديل سحابياً ☁️";
+        document.getElementById('admSuccess').classList.remove('hidden');
     }
 
     let clicks = 0;
@@ -306,5 +311,5 @@
     });
 </script>
 </body>
-                    </html>
-                    
+                </html>
+    
