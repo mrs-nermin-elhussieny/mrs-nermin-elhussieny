@@ -565,4 +565,103 @@
             document.getElementById('l3').innerText = (student.l3 || "0") + " / 10";
             document.getElementById('l4').innerText = (student.l4 || "0") + " / 10";
 
-            err
+            errorDiv.classList.add('hidden');
+            resultCard.classList.remove('hidden');
+        } else {
+            resultCard.classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    function showAdminLogin() {
+        document.getElementById('studentView').classList.add('hidden');
+        document.getElementById('adminLoginView').classList.remove('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    function showStudentSearch() {
+        document.getElementById('studentView').classList.remove('hidden');
+        document.getElementById('adminLoginView').classList.add('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    function checkAdminPassword() {
+        const pass = document.getElementById('adminPass').value;
+        const err = document.getElementById('loginError');
+
+        if (pass === ADMIN_PASSWORD) {
+            err.classList.add('hidden');
+            document.getElementById('adminLoginView').classList.add('hidden');
+            document.getElementById('adminDashboardView').classList.remove('hidden');
+        } else {
+            err.classList.remove('hidden');
+        }
+    }
+
+    function saveStudentData() {
+        const code = document.getElementById('admCode').value.trim();
+        const name = document.getElementById('admName').value.trim();
+        const grade = document.getElementById('admClass').value;
+        const group = document.getElementById('admGroup').value;
+        const payment = document.getElementById('admPayment').value;
+        
+        const w1 = document.getElementById('admW1').value.trim() || "0";
+        const w2 = document.getElementById('admW2').value.trim() || "0";
+        const w3 = document.getElementById('admW3').value.trim() || "0";
+        const w4 = document.getElementById('admW4').value.trim() || "0";
+        const weeklyFinal = document.getElementById('admWeeklyFinal').value.trim() || "0";
+
+        const unit = document.getElementById('admUnit').value.trim() || "0";
+        const monthlyExam = document.getElementById('admMonthlyExam').value.trim() || "0";
+        const finalGrade = document.getElementById('admFinalGrade').value.trim() || "-";
+
+        const l1 = document.getElementById('admL1').value.trim() || "0";
+        const l2 = document.getElementById('admL2').value.trim() || "0";
+        const l3 = document.getElementById('admL3').value.trim() || "0";
+        const l4 = document.getElementById('admL4').value.trim() || "0";
+
+        const err = document.getElementById('admError');
+        const succ = document.getElementById('admSuccess');
+
+        if (!code || !name || !grade || !group) {
+            err.classList.remove('hidden');
+            succ.classList.add('hidden');
+            return;
+        }
+
+        const db = getStoredData();
+        db[code] = {
+            name: name,
+            grade: grade,
+            group: group,
+            payment: payment,
+            w1: w1, w2: w2, w3: w3, w4: w4,
+            weeklyFinal: weeklyFinal,
+            unit: unit,
+            monthlyExam: monthlyExam,
+            finalGrade: finalGrade,
+            l1: l1, l2: l2, l3: l3, l4: l4
+        };
+
+        saveDataToStorage(db);
+
+        err.classList.add('hidden');
+        succ.classList.remove('hidden');
+
+        setTimeout(() => {
+            succ.classList.add('hidden');
+        }, 3000);
+    }
+
+    let headerClicks = 0;
+    document.querySelector('.header-card').addEventListener('click', function() {
+        headerClicks++;
+        if (headerClicks >= 5) {
+            showAdminLogin();
+            headerClicks = 0;
+        }
+    });
+</script>
+
+</body>
+</html>
