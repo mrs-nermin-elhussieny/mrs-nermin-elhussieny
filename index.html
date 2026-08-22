@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير درجات الطلاب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f4eb;
+            --primary-green: #0b4f42;
+            --light-green: #eef7f4;
+            --card-yellow: #fef8dd;
+            --accent-yellow: #eedf9b;
+            --pink-bg: #fde8e8;
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .header-card {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: right;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-card h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .header-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .teacher-name {
+            color: var(--accent-yellow);
+            font-weight: 700;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .year-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #eaeaea;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dddddd;
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .student-badge {
+            background-color: var(--card-yellow);
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .student-badge .title {
+            font-size: 12px;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        .student-badge .code {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-green);
+        }
+
+        .student-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--light-green);
+            color: var(--primary-green);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .tag.yellow {
+            background-color: var(--card-yellow);
+        }
+
+        .score-box {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .score-num {
+            font-size: 42px;
+            font-weight: 800;
+            margin: 5px 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .lesson-card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .lesson-card .title {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .lesson-card .val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-top: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-msg {
+            color: #d9534f;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header-card">
+        <h1>تقرير متابعة الطلاب</h1>
+        <p>نظام استعلام درجات ومتابعة الطلاب الشهري</p>
+        <div class="teacher-name">الأستاذة / نرمين الحسيني</div>
+        <div class="year-badge">العام الدراسي 2026/2027</div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card">
+        <div class="input-group">
+            <label for="studentCode">أدخل كود الطالب</label>
+            <input type="number" id="studentCode" class="input-field" placeholder="مثال: 5131">
+            <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
+            <div id="error" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
+        </div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultCard" class="card hidden">
+        <div class="student-badge">
+            <div class="title">كود الطالب</div>
+            <div class="code" id="resCode">5131</div>
+        </div>
+
+        <div class="student-name" id="resName">حسن محمد حسن</div>
+        
+        <div>
+            <span class="tag" id="resClass">الصف الخامس الابتدائي</span><br>
+            <span class="tag yellow" id="resGroup">مجموعة سبت وتلات الساعة 7 وربع</span>
+        </div>
+
+        <div class="score-box">
+            <div style="font-size: 13px;">مجموع الشهر من 100</div>
+            <div class="score-num" id="resTotal">0.0</div>
+            <div style="font-size: 13px;" id="resPercent">نسبة الدرجات: 0.0%</div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">درجة شرائح الحصة (من 10)</div>
+            <div class="grid-2">
+                <div class="lesson-card">
+                    <div class="title">الحصة 1</div>
+                    <div class="val" id="l1">0</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 2</div>
+                    <div class="val" id="l2">0</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 3</div>
+                    <div class="val" id="l3">0</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 4</div>
+                    <div class="val" id="l4">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // قاعدة بيانات الطلاب (يمكنك إضافة أي عدد من الطلاب هنا)
+    const studentsData = {
+        "5131": {
+            name: "حسن محمد حسن",
+            grade: "الصف الخامس الابتدائي",
+            group: "مجموعة سبت وتلات الساعة 7 وربع",
+            total: "85.0",
+            percent: "85%",
+            l1: "9",
+            l2: "8",
+            l3: "9",
+            l4: "8"
+        },
+        "1002": {
+            name: "أحمد علي محمود",
+            grade: "الصف السادس الابتدائي",
+            group: "مجموعة أحد وأربعاء الساعة 5",
+            total: "95.0",
+            percent: "95%",
+            l1: "10",
+            l2: "9",
+            l3: "10",
+            l4: "9"
+        }
+    };
+
+    function searchStudent() {
+        const code = document.getElementById('studentCode').value.trim();
+        const errorDiv = document.getElementById('error');
+        const resultCard = document.getElementById('resultCard');
+
+        if (studentsData[code]) {
+            const student = studentsData[code];
+            document.getElementById('resCode').innerText = code;
+            document.getElementById('resName').innerText = student.name;
+            document.getElementById('resClass').innerText = student.grade;
+            document.getElementById('resGroup').innerText = student.group;
+            document.getElementById('resTotal').innerText = student.total;
+            document.getElementById('resPercent').innerText = "نسبة الدرجات: " + student.percent;
+            
+            document.getElementById('l1').innerText = student.l1;
+            document.getElementById('l2').innerText = student.l2;
+            document.getElementById('l3').innerText = student.l3;
+            document.getElementById('l4').innerText = student.l4;
+
+            errorDiv.classList.add('hidden');
+            resultCard.classList.remove('hidden');
+        } else {
+            resultCard.classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+        }
+    }
+</script>
+
+</body>
+  </html>
+  
