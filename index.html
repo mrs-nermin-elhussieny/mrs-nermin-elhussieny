@@ -15,271 +15,36 @@
             --text-dark: #2c3e50;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .header-card {
-            background-color: var(--primary-green);
-            color: white;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: right;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            cursor: pointer;
-        }
-
-        .header-card h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-
-        .header-card p {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
-        .teacher-name {
-            color: var(--accent-yellow);
-            font-weight: 700;
-            margin-top: 8px;
-            font-size: 15px;
-        }
-
-        .year-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-top: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            border: 1px solid #eaeaea;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .input-group label {
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .input-field, .select-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #dddddd;
-            border-radius: 12px;
-            font-size: 15px;
-            text-align: center;
-            outline: none;
-            background: white;
-        }
-
-        .btn {
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            margin-top: 10px;
-        }
-
-        .btn-admin {
-            background-color: #28a745;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .student-badge {
-            background-color: var(--card-yellow);
-            padding: 10px 15px;
-            border-radius: 12px;
-            display: inline-block;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .student-badge .title {
-            font-size: 11px;
-            color: var(--primary-green);
-            font-weight: bold;
-        }
-
-        .student-badge .code {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary-green);
-        }
-
-        .student-name {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            background-color: var(--light-green);
-            color: var(--primary-green);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .tag.yellow {
-            background-color: var(--card-yellow);
-        }
-
-        .payment-tag {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        .payment-paid {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .payment-unpaid {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .score-box {
-            background-color: var(--primary-green);
-            color: white;
-            border-radius: 18px;
-            padding: 18px;
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .score-num {
-            font-size: 38px;
-            font-weight: 800;
-            margin: 5px 0;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .lesson-card {
-            background: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .lesson-card.highlight {
-            background: #f0f7f5;
-            border: 1px solid #b2dfdb;
-        }
-
-        .lesson-card .title {
-            font-size: 12px;
-            color: #555;
-            font-weight: bold;
-        }
-
-        .lesson-card .val {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--primary-green);
-            margin-top: 2px;
-        }
-
-        .section-title {
-            font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--primary-green);
-            border-bottom: 2px solid var(--light-green);
-            padding-bottom: 4px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .error-msg {
-            color: #d9534f;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .success-msg {
-            color: #28a745;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .form-row input, .form-row select {
-            flex: 1;
-        }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-dark); padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 15px; }
+        .header-card { background-color: var(--primary-green); color: white; border-radius: 20px; padding: 20px; text-align: right; cursor: pointer; }
+        .header-card h1 { font-size: 24px; font-weight: 800; }
+        .teacher-name { color: var(--accent-yellow); font-weight: 700; margin-top: 8px; }
+        .card { background: white; border-radius: 20px; padding: 20px; border: 1px solid #eaeaea; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
+        .input-field, .select-field { width: 100%; padding: 12px; border: 1px solid #dddddd; border-radius: 12px; text-align: center; font-size: 15px; outline: none; }
+        .btn { background-color: var(--primary-green); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; }
+        .btn-secondary { background-color: #6c757d; margin-top: 10px; }
+        .btn-admin { background-color: #28a745; }
+        .btn-export { background-color: #007bff; margin-top: 10px; }
+        .student-badge { background-color: var(--card-yellow); padding: 10px 15px; border-radius: 12px; text-align: center; }
+        .tag { display: inline-block; background-color: var(--light-green); color: var(--primary-green); padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; }
+        .tag.yellow { background-color: var(--card-yellow); }
+        .payment-tag { padding: 6px 14px; border-radius: 12px; font-weight: bold; font-size: 13px; display: inline-block; margin-top: 5px; }
+        .payment-paid { background-color: #d4edda; color: #155724; }
+        .payment-unpaid { background-color: #f8d7da; color: #721c24; }
+        .score-box { background-color: var(--primary-green); color: white; border-radius: 18px; padding: 15px; text-align: center; margin-top: 15px; }
+        .score-num { font-size: 32px; font-weight: 800; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .lesson-card { background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 10px; text-align: center; }
+        .lesson-card.highlight { background: #f0f7f5; border: 1px solid #b2dfdb; }
+        .section-title { font-weight: bold; margin-top: 15px; font-size: 14px; color: var(--primary-green); border-bottom: 2px solid var(--light-green); }
+        .hidden { display: none !important; }
+        .error-msg { color: #d9534f; font-size: 13px; text-align: center; }
+        .success-msg { color: #28a745; font-size: 13px; text-align: center; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row input { flex: 1; }
     </style>
 </head>
 <body>
@@ -287,118 +52,77 @@
 <div class="container">
     <div class="header-card" id="mainHeader">
         <h1>تقرير متابعة الطلاب</h1>
-        <p>نظام استعلام درجات ومتابعة الطلاب الشهري</p>
         <div class="teacher-name">الأستاذة / نرمين الحسيني</div>
-        <div class="year-badge">العام الدراسي 2026/2027</div>
     </div>
 
-    <!-- VIEW 1: STUDENT SEARCH -->
+    <!-- STUDENT VIEW -->
     <div id="studentView">
         <div class="card">
             <div class="input-group">
-                <label for="studentCode">أدخل كود الطالب</label>
-                <input type="number" id="studentCode" class="input-field" placeholder="أدخل الكود هنا">
+                <label>أدخل كود الطالب</label>
+                <input type="number" id="studentCode" class="input-field" placeholder="الكود هنا">
                 <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
-                <div id="searchError" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
+                <div id="searchError" class="error-msg hidden">الكود غير موجود</div>
             </div>
         </div>
 
         <div id="resultCard" class="card hidden" style="margin-top: 15px;">
             <div class="student-badge">
-                <div class="title">كود الطالب</div>
-                <div class="code" id="resCode">3123</div>
+                <div>كود الطالب: <b id="resCode"></b></div>
             </div>
-
-            <div class="student-name" id="resName">-</div>
-            
-            <div>
-                <span class="tag" id="resClass">-</span><br>
+            <h2 id="resName" style="margin-top: 10px;">-</h2>
+            <div style="margin-top: 5px;">
+                <span class="tag" id="resClass">-</span>
                 <span class="tag yellow" id="resGroup">-</span>
             </div>
-
-            <div id="resPayment" class="payment-tag payment-paid">تم سداد المصروفات</div>
+            <div id="resPayment" class="payment-tag payment-paid">تم السداد</div>
 
             <div class="score-box">
-                <div style="font-size: 13px;">التقييم النهائي</div>
+                <div>التقييم النهائي</div>
                 <div class="score-num" id="resFinalGrade">-</div>
             </div>
 
             <div class="section-title">الاختبار الشهري</div>
-            <div class="lesson-card highlight">
-                <div class="title">درجة الاختبار الشهري (من 50)</div>
-                <div class="val" id="resMonthlyExam">0 / 50</div>
-            </div>
+            <div class="lesson-card highlight"><div class="val" id="resMonthlyExam">0 / 50</div></div>
 
-            <div class="section-title">التقييم الأسبوعي (من 20)</div>
+            <div class="section-title">التقييم الأسبوعي</div>
             <div class="grid-2">
-                <div class="lesson-card">
-                    <div class="title">الأسبوع 1</div>
-                    <div class="val" id="w1">0 / 20</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الأسبوع 2</div>
-                    <div class="val" id="w2">0 / 20</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الأسبوع 3</div>
-                    <div class="val" id="w3">0 / 20</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الأسبوع 4</div>
-                    <div class="val" id="w4">0 / 20</div>
-                </div>
+                <div class="lesson-card">أسبوع 1: <b id="w1">0</b></div>
+                <div class="lesson-card">أسبوع 2: <b id="w2">0</b></div>
+                <div class="lesson-card">أسبوع 3: <b id="w3">0</b></div>
+                <div class="lesson-card">أسبوع 4: <b id="w4">0</b></div>
             </div>
-            <div class="lesson-card highlight" style="margin-top: 10px;">
-                <div class="title">الدرجة النهائية للتقييم الأسبوعي</div>
-                <div class="val" id="resWeeklyFinal">0 / 20</div>
-            </div>
+            <div class="lesson-card highlight" style="margin-top:5px;">المجموع: <b id="resWeeklyFinal">0</b> / 20</div>
 
             <div class="section-title">تقييم الوحدة</div>
-            <div class="lesson-card highlight">
-                <div class="title">درجة تقييم الوحدة (من 20)</div>
-                <div class="val" id="resUnit">0 / 20</div>
-            </div>
+            <div class="lesson-card highlight"><div class="val" id="resUnit">0 / 20</div></div>
 
-            <div class="section-title">درجة شرائح الحصة (من 10)</div>
+            <div class="section-title">شرائح الحصة (من 10)</div>
             <div class="grid-2">
-                <div class="lesson-card">
-                    <div class="title">الحصة 1</div>
-                    <div class="val" id="l1">0 / 10</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 2</div>
-                    <div class="val" id="l2">0 / 10</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 3</div>
-                    <div class="val" id="l3">0 / 10</div>
-                </div>
-                <div class="lesson-card">
-                    <div class="title">الحصة 4</div>
-                    <div class="val" id="l4">0 / 10</div>
-                </div>
+                <div class="lesson-card">حصة 1: <b id="l1">0</b></div>
+                <div class="lesson-card">حصة 2: <b id="l2">0</b></div>
+                <div class="lesson-card">حصة 3: <b id="l3">0</b></div>
+                <div class="lesson-card">حصة 4: <b id="l4">0</b></div>
             </div>
         </div>
     </div>
 
-    <!-- VIEW 2: ADMIN LOGIN -->
+    <!-- ADMIN LOGIN -->
     <div id="adminLoginView" class="card hidden">
-        <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">لوحة التحكم 📝</h2>
-        <div class="input-group">
-            <label for="adminPass">كلمة المرور:</label>
-            <input type="password" id="adminPass" class="input-field" placeholder="أدخلي كلمة السر">
-            <button class="btn btn-admin" onclick="checkAdminPassword()">تسجيل الدخول</button>
-            <button class="btn btn-secondary" onclick="showStudentSearch()">العودة للموقع الرئيسي</button>
-            <div id="loginError" class="error-msg hidden">كلمة المرور غير صحيحة!</div>
+        <h2>لوحة التحكم 📝</h2>
+        <div class="input-group" style="margin-top: 10px;">
+            <input type="password" id="adminPass" class="input-field" placeholder="كلمة السر">
+            <button class="btn btn-admin" onclick="checkAdminPassword()">دخول</button>
+            <button class="btn btn-secondary" onclick="showStudentSearch()">إلغاء</button>
+            <div id="loginError" class="error-msg hidden">كلمة السر خاطئة</div>
         </div>
     </div>
 
-    <!-- VIEW 3: ADMIN DASHBOARD -->
+    <!-- ADMIN DASHBOARD -->
     <div id="adminDashboardView" class="hidden">
         <div class="card">
-            <h3 style="margin-bottom: 15px; color: var(--primary-green);">إضافة أو تعديل طالب ✏️</h3>
-            <div class="input-group">
-                <label>الصف الدراسي</label>
+            <h3>إضافة / تعديل بيانات طالب ✏️</h3>
+            <div class="input-group" style="margin-top: 10px;">
                 <select id="admClass" class="select-field" onchange="updateGroupOptions()">
                     <option value="">اختر الصف الدراسي</option>
                     <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
@@ -406,61 +130,46 @@
                     <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
                     <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
                 </select>
-
-                <label>المجموعة</label>
-                <select id="admGroup" class="select-field">
-                    <option value="">اختر الصف أولاً</option>
-                </select>
-
-                <label>كود الطالب</label>
-                <input type="number" id="admCode" class="input-field" placeholder="أدخلي الكود">
-
-                <label>اسم الطالب</label>
-                <input type="text" id="admName" class="input-field" placeholder="الاسم الثلاثي">
-
-                <label>حالة الدفع الشهري</label>
+                <select id="admGroup" class="select-field"><option value="">اختر المجموعة</option></select>
+                <input type="number" id="admCode" class="input-field" placeholder="كود الطالب">
+                <input type="text" id="admName" class="input-field" placeholder="اسم الطالب">
+                
                 <select id="admPayment" class="select-field">
                     <option value="paid">تم السداد</option>
                     <option value="unpaid">لم يتم السداد</option>
                 </select>
 
-                <label>التقييم الأسبوعي (4 أسابيع - من 20)</label>
+                <label>التقييم الأسبوعي (4 أسابيع)</label>
                 <div class="form-row">
-                    <input type="number" id="admW1" class="input-field" placeholder="أسبوع 1">
-                    <input type="number" id="admW2" class="input-field" placeholder="أسبوع 2">
+                    <input type="number" id="admW1" class="input-field" placeholder="س1">
+                    <input type="number" id="admW2" class="input-field" placeholder="س2">
                 </div>
                 <div class="form-row">
-                    <input type="number" id="admW3" class="input-field" placeholder="أسبوع 3">
-                    <input type="number" id="admW4" class="input-field" placeholder="أسبوع 4">
+                    <input type="number" id="admW3" class="input-field" placeholder="س3">
+                    <input type="number" id="admW4" class="input-field" placeholder="س4">
                 </div>
-                <input type="number" id="admWeeklyFinal" class="input-field" placeholder="الدرجة النهائية للتقييم الأسبوعي (من 20)">
+                <input type="number" id="admWeeklyFinal" class="input-field" placeholder="الدرجة النهائية الأسبوعية">
 
-                <label>تقييم الوحدة (من 20)</label>
-                <input type="number" id="admUnit" class="input-field" placeholder="درجة تقييم الوحدة">
+                <input type="number" id="admUnit" class="input-field" placeholder="تقييم الوحدة (من 20)">
+                <input type="number" id="admMonthlyExam" class="input-field" placeholder="الاختبار الشهري (من 50)">
+                <input type="text" id="admFinalGrade" class="input-field" placeholder="التقييم النهائي (ممتاز / 95%)">
 
-                <label>درجة الاختبار الشهري (من 50)</label>
-                <input type="number" id="admMonthlyExam" class="input-field" placeholder="درجة الاختبار الشهري">
-
-                <label>التقييم النهائي</label>
-                <input type="text" id="admFinalGrade" class="input-field" placeholder="مثال: ممتاز / 95%">
-
-                <label>درجات شرائح الحصة (من 10)</label>
+                <label>شرائح الحصة (من 10)</label>
                 <div class="form-row">
-                    <input type="number" id="admL1" class="input-field" placeholder="حصة 1">
-                    <input type="number" id="admL2" class="input-field" placeholder="حصة 2">
+                    <input type="number" id="admL1" class="input-field" placeholder="ح1">
+                    <input type="number" id="admL2" class="input-field" placeholder="ح2">
                 </div>
                 <div class="form-row">
-                    <input type="number" id="admL3" class="input-field" placeholder="حصة 3">
-                    <input type="number" id="admL4" class="input-field" placeholder="حصة 4">
+                    <input type="number" id="admL3" class="input-field" placeholder="ح3">
+                    <input type="number" id="admL4" class="input-field" placeholder="ح4">
                 </div>
 
-                <button class="btn btn-admin" onclick="saveStudentData()">حفظ البيانات 💾</button>
-                <div id="admSuccess" class="success-msg hidden">تم حفظ بيانات الطالب بنجاح!</div>
-                <div id="admError" class="error-msg hidden">يرجى ملء جميع البيانات الأساسية والكود الصحيح</div>
+                <button class="btn btn-admin" onclick="saveStudentData()">حفظ الطالب مؤقتاً 💾</button>
+                <button class="btn btn-export" onclick="exportDataFile()">تصدير نسخة البيانات للرفع 📥</button>
+                <div id="admSuccess" class="success-msg hidden">تم الحفظ! اضغطي "تصدير" لتحديث باقي الأجهزة.</div>
             </div>
         </div>
-
-        <button class="btn btn-secondary" onclick="showStudentSearch()" style="margin-top: 15px;">الخروج من لوحة التحكم</button>
+        <button class="btn btn-secondary" onclick="showStudentSearch()">الخروج</button>
     </div>
 </div>
 
@@ -474,18 +183,11 @@
         "الصف السادس الابتدائي": ["مجموعة الأحد والأربعاء الساعة 7 وربع"]
     };
 
-    const defaultData = {
+    let globalData = {
         "3123": {
-            name: "طالب تجريبي",
-            grade: "الصف الثالث الابتدائي",
-            group: "مجموعة السبت والثلاثاء الساعة 5",
-            payment: "paid",
-            w1: "20", w2: "19", w3: "20", w4: "18",
-            weeklyFinal: "19",
-            unit: "20",
-            monthlyExam: "48",
-            finalGrade: "ممتاز",
-            l1: "10", l2: "10", l3: "9", l4: "10"
+            name: "طالب تجريبي", grade: "الصف الثالث الابتدائي", group: "مجموعة السبت والثلاثاء الساعة 5",
+            payment: "paid", w1: "20", w2: "19", w3: "20", w4: "18", weeklyFinal: "19",
+            unit: "20", monthlyExam: "48", finalGrade: "ممتاز", l1: "10", l2: "10", l3: "9", l4: "10"
         }
     };
 
@@ -493,68 +195,43 @@
         const classSelect = document.getElementById('admClass').value;
         const groupSelect = document.getElementById('admGroup');
         groupSelect.innerHTML = '<option value="">اختر المجموعة</option>';
-
         if (groupsByClass[classSelect]) {
-            groupsByClass[classSelect].forEach(group => {
+            groupsByClass[classSelect].forEach(g => {
                 const opt = document.createElement('option');
-                opt.value = group;
-                opt.textContent = group;
+                opt.value = g; opt.textContent = g;
                 groupSelect.appendChild(opt);
             });
         }
-    }
-
-    function getStoredData() {
-        const stored = localStorage.getItem('nermin_students_db');
-        if (stored) {
-            return JSON.parse(stored);
-        } else {
-            localStorage.setItem('nermin_students_db', JSON.stringify(defaultData));
-            return defaultData;
-        }
-    }
-
-    function saveDataToStorage(data) {
-        localStorage.setItem('nermin_students_db', JSON.stringify(data));
     }
 
     function searchStudent() {
         const code = document.getElementById('studentCode').value.trim();
         const errorDiv = document.getElementById('searchError');
         const resultCard = document.getElementById('resultCard');
-        const db = getStoredData();
 
-        if (db[code]) {
-            const student = db[code];
+        if (globalData[code]) {
+            const st = globalData[code];
             document.getElementById('resCode').innerText = code;
-            document.getElementById('resName').innerText = student.name;
-            document.getElementById('resClass').innerText = student.grade;
-            document.getElementById('resGroup').innerText = student.group;
+            document.getElementById('resName').innerText = st.name;
+            document.getElementById('resClass').innerText = st.grade;
+            document.getElementById('resGroup').innerText = st.group;
             
             const payElem = document.getElementById('resPayment');
-            if (student.payment === 'unpaid') {
-                payElem.innerText = "لم يتم سداد المصروفات";
-                payElem.className = "payment-tag payment-unpaid";
-            } else {
-                payElem.innerText = "تم سداد المصروفات";
-                payElem.className = "payment-tag payment-paid";
-            }
+            payElem.innerText = st.payment === 'unpaid' ? "لم يتم السداد" : "تم السداد";
+            payElem.className = st.payment === 'unpaid' ? "payment-tag payment-unpaid" : "payment-tag payment-paid";
 
-            document.getElementById('resFinalGrade').innerText = student.finalGrade || "-";
-            document.getElementById('resMonthlyExam').innerText = (student.monthlyExam || "0") + " / 50";
-            
-            document.getElementById('w1').innerText = (student.w1 || "0") + " / 20";
-            document.getElementById('w2').innerText = (student.w2 || "0") + " / 20";
-            document.getElementById('w3').innerText = (student.w3 || "0") + " / 20";
-            document.getElementById('w4').innerText = (student.w4 || "0") + " / 20";
-            document.getElementById('resWeeklyFinal').innerText = (student.weeklyFinal || "0") + " / 20";
-
-            document.getElementById('resUnit').innerText = (student.unit || "0") + " / 20";
-
-            document.getElementById('l1').innerText = (student.l1 || "0") + " / 10";
-            document.getElementById('l2').innerText = (student.l2 || "0") + " / 10";
-            document.getElementById('l3').innerText = (student.l3 || "0") + " / 10";
-            document.getElementById('l4').innerText = (student.l4 || "0") + " / 10";
+            document.getElementById('resFinalGrade').innerText = st.finalGrade || "-";
+            document.getElementById('resMonthlyExam').innerText = (st.monthlyExam || "0") + " / 50";
+            document.getElementById('w1').innerText = st.w1 || "0";
+            document.getElementById('w2').innerText = st.w2 || "0";
+            document.getElementById('w3').innerText = st.w3 || "0";
+            document.getElementById('w4').innerText = st.w4 || "0";
+            document.getElementById('resWeeklyFinal').innerText = st.weeklyFinal || "0";
+            document.getElementById('resUnit').innerText = (st.unit || "0") + " / 20";
+            document.getElementById('l1').innerText = st.l1 || "0";
+            document.getElementById('l2').innerText = st.l2 || "0";
+            document.getElementById('l3').innerText = st.l3 || "0";
+            document.getElementById('l4').innerText = st.l4 || "0";
 
             errorDiv.classList.add('hidden');
             resultCard.classList.remove('hidden');
@@ -567,7 +244,6 @@
     function showAdminLogin() {
         document.getElementById('studentView').classList.add('hidden');
         document.getElementById('adminLoginView').classList.remove('hidden');
-        document.getElementById('adminDashboardView').classList.add('hidden');
     }
 
     function showStudentSearch() {
@@ -577,82 +253,58 @@
     }
 
     function checkAdminPassword() {
-        const pass = document.getElementById('adminPass').value;
-        const err = document.getElementById('loginError');
-
-        if (pass === ADMIN_PASSWORD) {
-            err.classList.add('hidden');
+        if (document.getElementById('adminPass').value === ADMIN_PASSWORD) {
+            document.getElementById('loginError').classList.add('hidden');
             document.getElementById('adminLoginView').classList.add('hidden');
             document.getElementById('adminDashboardView').classList.remove('hidden');
         } else {
-            err.classList.remove('hidden');
+            document.getElementById('loginError').classList.remove('hidden');
         }
     }
 
     function saveStudentData() {
         const code = document.getElementById('admCode').value.trim();
         const name = document.getElementById('admName').value.trim();
-        const grade = document.getElementById('admClass').value;
-        const group = document.getElementById('admGroup').value;
-        const payment = document.getElementById('admPayment').value;
-        
-        const w1 = document.getElementById('admW1').value.trim() || "0";
-        const w2 = document.getElementById('admW2').value.trim() || "0";
-        const w3 = document.getElementById('admW3').value.trim() || "0";
-        const w4 = document.getElementById('admW4').value.trim() || "0";
-        const weeklyFinal = document.getElementById('admWeeklyFinal').value.trim() || "0";
+        if (!code || !name) return;
 
-        const unit = document.getElementById('admUnit').value.trim() || "0";
-        const monthlyExam = document.getElementById('admMonthlyExam').value.trim() || "0";
-        const finalGrade = document.getElementById('admFinalGrade').value.trim() || "-";
-
-        const l1 = document.getElementById('admL1').value.trim() || "0";
-        const l2 = document.getElementById('admL2').value.trim() || "0";
-        const l3 = document.getElementById('admL3').value.trim() || "0";
-        const l4 = document.getElementById('admL4').value.trim() || "0";
-
-        const err = document.getElementById('admError');
-        const succ = document.getElementById('admSuccess');
-
-        if (!code || !name || !grade || !group) {
-            err.classList.remove('hidden');
-            succ.classList.add('hidden');
-            return;
-        }
-
-        const db = getStoredData();
-        db[code] = {
+        globalData[code] = {
             name: name,
-            grade: grade,
-            group: group,
-            payment: payment,
-            w1: w1, w2: w2, w3: w3, w4: w4,
-            weeklyFinal: weeklyFinal,
-            unit: unit,
-            monthlyExam: monthlyExam,
-            finalGrade: finalGrade,
-            l1: l1, l2: l2, l3: l3, l4: l4
+            grade: document.getElementById('admClass').value,
+            group: document.getElementById('admGroup').value,
+            payment: document.getElementById('admPayment').value,
+            w1: document.getElementById('admW1').value || "0",
+            w2: document.getElementById('admW2').value || "0",
+            w3: document.getElementById('admW3').value || "0",
+            w4: document.getElementById('admW4').value || "0",
+            weeklyFinal: document.getElementById('admWeeklyFinal').value || "0",
+            unit: document.getElementById('admUnit').value || "0",
+            monthlyExam: document.getElementById('admMonthlyExam').value || "0",
+            finalGrade: document.getElementById('admFinalGrade').value || "-",
+            l1: document.getElementById('admL1').value || "0",
+            l2: document.getElementById('admL2').value || "0",
+            l3: document.getElementById('admL3').value || "0",
+            l4: document.getElementById('admL4').value || "0"
         };
 
-        saveDataToStorage(db);
-
-        err.classList.add('hidden');
-        succ.classList.remove('hidden');
-
-        setTimeout(() => {
-            succ.classList.add('hidden');
-        }, 3000);
+        document.getElementById('admSuccess').classList.remove('hidden');
     }
 
-    let headerClicks = 0;
-    document.getElementById('mainHeader').addEventListener('click', function() {
-        headerClicks++;
-        if (headerClicks >= 5) {
-            showAdminLogin();
-            headerClicks = 0;
-        }
+    function exportDataFile() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalData, null, 4));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "students.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    let clicks = 0;
+    document.getElementById('mainHeader').addEventListener('click', () => {
+        clicks++;
+        if (clicks >= 5) { showAdminLogin(); clicks = 0; }
     });
 </script>
-
 </body>
-</html>
+                    </html>
+                    
