@@ -19,12 +19,19 @@
         .btn { background-color: var(--primary-green); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; }
         .btn-secondary { background-color: #6c757d; margin-top: 10px; }
         .btn-admin { background-color: #28a745; }
+        .btn-sm { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; background-color: #17a2b8; color: white; }
         .student-badge { background-color: var(--card-yellow); padding: 10px 15px; border-radius: 12px; text-align: center; }
         .tag { display: inline-block; background-color: var(--light-green); color: var(--primary-green); padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; }
         .tag.yellow { background-color: var(--card-yellow); }
-        .payment-tag { padding: 6px 14px; border-radius: 12px; font-weight: bold; font-size: 13px; display: inline-block; margin-top: 5px; }
-        .payment-paid { background-color: #d4edda; color: #155724; }
-        .payment-unpaid { background-color: #f8d7da; color: #721c24; }
+        
+        /* Payment Status Styles */
+        .payment-box { margin-top: 15px; background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 12px; }
+        .payment-status-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .payment-status-item:last-child { border-bottom: none; }
+        .status-badge { padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size: 12px; }
+        .status-paid { background-color: #d4edda; color: #155724; }
+        .status-due { background-color: #fff3cd; color: #856404; }
+
         .score-box { background-color: var(--primary-green); color: white; border-radius: 18px; padding: 15px; text-align: center; margin-top: 15px; }
         .score-num { font-size: 32px; font-weight: 800; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -36,6 +43,12 @@
         .success-msg { color: #28a745; font-size: 13px; text-align: center; font-weight: bold; }
         .form-row { display: flex; gap: 10px; }
         .form-row input { flex: 1; }
+
+        /* Student List in Admin */
+        .student-list-container { max-height: 200px; overflow-y: auto; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; padding: 5px; background: #fdfdfd; }
+        .student-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid #eee; }
+        .student-list-item:last-child { border-bottom: none; }
+        .student-info-text { font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -66,7 +79,12 @@
                 <span class="tag" id="resClass">-</span>
                 <span class="tag yellow" id="resGroup">-</span>
             </div>
-            <div id="resPayment" class="payment-tag payment-paid">تم السداد</div>
+
+            <!-- PAYMENT DISPLAY FOR PARENT -->
+            <div class="section-title">حالة السداد الشهري</div>
+            <div class="payment-box" id="resPaymentList">
+                <!-- Dynamic Months -->
+            </div>
 
             <div class="score-box">
                 <div>التقييم النهائي</div>
@@ -112,25 +130,44 @@
     <!-- ADMIN DASHBOARD -->
     <div id="adminDashboardView" class="hidden">
         <div class="card">
-            <h3>إضافة / تعديل بيانات طالب ✏️</h3>
+            <h3>إدارة بيانات الطلاب ✏️</h3>
+            
             <div class="input-group" style="margin-top: 10px;">
-                <select id="admClass" class="select-field" onchange="updateGroupOptions()">
+                <label style="font-size: 13px; font-weight: bold;">اختر الصف والمجموعة لعرض الطلاب:</label>
+                <select id="admClass" class="select-field" onchange="onClassOrGroupChange()">
                     <option value="">اختر الصف الدراسي</option>
                     <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
                     <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
                     <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
                     <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
                 </select>
-                <select id="admGroup" class="select-field"><option value="">اختر المجموعة</option></select>
+                <select id="admGroup" class="select-field" onchange="renderGroupStudents()"><option value="">اختر المجموعة</option></select>
+
+                <!-- قائمة الطلاب المندرجة تحت المجموعة -->
+                <div id="groupStudentsContainer" class="hidden">
+                    <label style="font-size: 12px; font-weight: bold; color: var(--primary-green);">طلاب هذه المجموعة (اضغط تعديل لجلب بيانات الطالب):</label>
+                    <div class="student-list-container" id="groupStudentsList"></div>
+                </div>
+
+                <hr style="margin: 10px 0; border: none; border-top: 1px dashed #ccc;">
+
                 <input type="number" id="admCode" class="input-field" placeholder="كود الطالب">
                 <input type="text" id="admName" class="input-field" placeholder="اسم الطالب">
-                
-                <select id="admPayment" class="select-field">
-                    <option value="paid">تم السداد</option>
-                    <option value="unpaid">لم يتم السداد</option>
+
+                <label style="font-size: 13px; font-weight: bold;">آخر شهر تم سداده:</label>
+                <select id="admPaidMonth" class="select-field">
+                    <option value="0">لم يتم سداد أي شهر بعد</option>
+                    <option value="1">الشهر الأول</option>
+                    <option value="2">الشهر الثاني</option>
+                    <option value="3">الشهر الثالث</option>
+                    <option value="4">الشهر الرابع</option>
+                    <option value="5">الشهر الخامس</option>
+                    <option value="6">الشهر السادس</option>
+                    <option value="7">الشهر السابع</option>
+                    <option value="8">الشهر الثامن</option>
                 </select>
 
-                <label>التقييم الأسبوعي (4 أسابيع)</label>
+                <label style="font-size: 13px; font-weight: bold;">التقييم الأسبوعي (4 أسابيع)</label>
                 <div class="form-row">
                     <input type="number" id="admW1" class="input-field" placeholder="س1">
                     <input type="number" id="admW2" class="input-field" placeholder="س2">
@@ -145,7 +182,7 @@
                 <input type="number" id="admMonthlyExam" class="input-field" placeholder="الاختبار الشهري (من 50)">
                 <input type="text" id="admFinalGrade" class="input-field" placeholder="التقييم النهائي (ممتاز / 95%)">
 
-                <label>شرائح الحصة (من 10)</label>
+                <label style="font-size: 13px; font-weight: bold;">شرائح الحصة (من 10)</label>
                 <div class="form-row">
                     <input type="number" id="admL1" class="input-field" placeholder="ح1">
                     <input type="number" id="admL2" class="input-field" placeholder="ح2">
@@ -156,7 +193,8 @@
                 </div>
 
                 <button class="btn btn-admin" id="saveBtn" onclick="saveStudentData()">حفظ التعديل سحابياً ☁️</button>
-                <div id="admSuccess" class="success-msg hidden">تم الحفظ فوراً وظهرت للجميع! ✅</div>
+                <button class="btn btn-secondary" onclick="clearAdminForm()">تفريغ الخانات 🔄</button>
+                <div id="admSuccess" class="success-msg hidden">تم الحفظ بنجاح! ✅</div>
             </div>
         </div>
         <button class="btn btn-secondary" onclick="showStudentSearch()">الخروج</button>
@@ -167,6 +205,11 @@
     const ADMIN_PASSWORD = "nermin2535";
     const BIN_ID = "6a898156f5f4af5e2934ddeb";
     const API_KEY = "$2a$10$SQSCbL578Jwl71gYZypgTutGVUFF2LuIKGiSIkOIufrJodN6/U96a";
+
+    const monthNames = [
+        "", "الشهر الأول", "الشهر الثاني", "الشهر الثالث", "الشهر الرابع",
+        "الشهر الخامس", "الشهر السادس", "الشهر السابع", "الشهر الثامن"
+    ];
 
     const groupsByClass = {
         "الصف الثالث الابتدائي": ["مجموعة السبت والثلاثاء الساعة 5"],
@@ -193,17 +236,105 @@
     }
     loadCloudData();
 
+    function onClassOrGroupChange() {
+        updateGroupOptions();
+        renderGroupStudents();
+    }
+
     function updateGroupOptions() {
         const classSelect = document.getElementById('admClass').value;
         const groupSelect = document.getElementById('admGroup');
+        const currentGroupVal = groupSelect.value;
+        
         groupSelect.innerHTML = '<option value="">اختر المجموعة</option>';
         if (groupsByClass[classSelect]) {
             groupsByClass[classSelect].forEach(g => {
                 const opt = document.createElement('option');
                 opt.value = g; opt.textContent = g;
+                if (g === currentGroupVal) opt.selected = true;
                 groupSelect.appendChild(opt);
             });
         }
+    }
+
+    function renderGroupStudents() {
+        const selectedClass = document.getElementById('admClass').value;
+        const selectedGroup = document.getElementById('admGroup').value;
+        const container = document.getElementById('groupStudentsContainer');
+        const listDiv = document.getElementById('groupStudentsList');
+
+        if (!selectedClass || !selectedGroup) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        listDiv.innerHTML = "";
+        let foundAny = false;
+
+        for (let code in globalData) {
+            let st = globalData[code];
+            if (st.grade === selectedClass && st.group === selectedGroup) {
+                foundAny = true;
+                let item = document.createElement('div');
+                item.className = 'student-list-item';
+                item.innerHTML = `
+                    <div class="student-info-text">${st.name} <span style="color:#777; font-size:11px;">(#${code})</span></div>
+                    <button class="btn-sm" onclick="editStudentByCode('${code}')">تعديل ✏️</button>
+                `;
+                listDiv.appendChild(item);
+            }
+        }
+
+        if (foundAny) {
+            container.classList.remove('hidden');
+        } else {
+            listDiv.innerHTML = '<div style="text-align:center; font-size:12px; color:#888; padding:8px;">لا يوجد طلاب مسجلين في هذه المجموعة حالياً</div>';
+            container.classList.remove('hidden');
+        }
+    }
+
+    function editStudentByCode(code) {
+        if (globalData && globalData[code]) {
+            const st = globalData[code];
+            document.getElementById('admCode').value = code;
+            document.getElementById('admName').value = st.name || "";
+            document.getElementById('admClass').value = st.grade || "";
+            updateGroupOptions();
+            document.getElementById('admGroup').value = st.group || "";
+            document.getElementById('admPaidMonth').value = st.paidMonth !== undefined ? st.paidMonth : (st.payment === 'unpaid' ? 0 : 1);
+            document.getElementById('admW1').value = st.w1 || "";
+            document.getElementById('admW2').value = st.w2 || "";
+            document.getElementById('admW3').value = st.w3 || "";
+            document.getElementById('admW4').value = st.w4 || "";
+            document.getElementById('admWeeklyFinal').value = st.weeklyFinal || "";
+            document.getElementById('admUnit').value = st.unit || "";
+            document.getElementById('admMonthlyExam').value = st.monthlyExam || "";
+            document.getElementById('admFinalGrade').value = st.finalGrade || "";
+            document.getElementById('admL1').value = st.l1 || "";
+            document.getElementById('admL2').value = st.l2 || "";
+            document.getElementById('admL3').value = st.l3 || "";
+            document.getElementById('admL4').value = st.l4 || "";
+            
+            window.scrollTo({ top: document.getElementById('admCode').offsetTop - 100, behavior: 'smooth' });
+        }
+    }
+
+    function clearAdminForm() {
+        document.getElementById('admCode').value = "";
+        document.getElementById('admName').value = "";
+        document.getElementById('admPaidMonth').value = "0";
+        document.getElementById('admW1').value = "";
+        document.getElementById('admW2').value = "";
+        document.getElementById('admW3').value = "";
+        document.getElementById('admW4').value = "";
+        document.getElementById('admWeeklyFinal').value = "";
+        document.getElementById('admUnit').value = "";
+        document.getElementById('admMonthlyExam').value = "";
+        document.getElementById('admFinalGrade').value = "";
+        document.getElementById('admL1').value = "";
+        document.getElementById('admL2').value = "";
+        document.getElementById('admL3').value = "";
+        document.getElementById('admL4').value = "";
     }
 
     async function searchStudent() {
@@ -219,9 +350,34 @@
             document.getElementById('resClass').innerText = st.grade;
             document.getElementById('resGroup').innerText = st.group;
             
-            const payElem = document.getElementById('resPayment');
-            payElem.innerText = st.payment === 'unpaid' ? "لم يتم السداد" : "تم السداد";
-            payElem.className = st.payment === 'unpaid' ? "payment-tag payment-unpaid" : "payment-tag payment-paid";
+            // Render Payments for Parent
+            let lastPaid = parseInt(st.paidMonth !== undefined ? st.paidMonth : (st.payment === 'unpaid' ? 0 : 1));
+            let payContainer = document.getElementById('resPaymentList');
+            payContainer.innerHTML = "";
+
+            if (lastPaid === 0) {
+                payContainer.innerHTML = `
+                    <div class="payment-status-item">
+                        <span>${monthNames[1]}</span>
+                        <span class="status-badge status-due">مستحق السداد ⚠️</span>
+                    </div>`;
+            } else {
+                for (let m = 1; m <= lastPaid; m++) {
+                    payContainer.innerHTML += `
+                        <div class="payment-status-item">
+                            <span>${monthNames[m]}</span>
+                            <span class="status-badge status-paid">تم السداد ✅</span>
+                        </div>`;
+                }
+                if (lastPaid < 8) {
+                    let nextMonth = lastPaid + 1;
+                    payContainer.innerHTML += `
+                        <div class="payment-status-item">
+                            <span>${monthNames[nextMonth]}</span>
+                            <span class="status-badge status-due">مستحق السداد ⚠️</span>
+                        </div>`;
+                }
+            }
 
             document.getElementById('resFinalGrade').innerText = st.finalGrade || "-";
             document.getElementById('resMonthlyExam').innerText = (st.monthlyExam || "0") + " / 50";
@@ -260,6 +416,7 @@
             document.getElementById('loginError').classList.add('hidden');
             document.getElementById('adminLoginView').classList.add('hidden');
             document.getElementById('adminDashboardView').classList.remove('hidden');
+            renderGroupStudents();
         } else {
             document.getElementById('loginError').classList.remove('hidden');
         }
@@ -282,7 +439,7 @@
             name: name,
             grade: document.getElementById('admClass').value,
             group: document.getElementById('admGroup').value,
-            payment: document.getElementById('admPayment').value,
+            paidMonth: parseInt(document.getElementById('admPaidMonth').value),
             w1: document.getElementById('admW1').value || "0",
             w2: document.getElementById('admW2').value || "0",
             w3: document.getElementById('admW3').value || "0",
@@ -310,6 +467,7 @@
             if (res.ok) {
                 btn.innerText = "حفظ التعديل سحابياً ☁️";
                 document.getElementById('admSuccess').classList.remove('hidden');
+                renderGroupStudents();
                 setTimeout(() => { document.getElementById('admSuccess').classList.add('hidden'); }, 3000);
             } else {
                 btn.innerText = "حفظ التعديل سحابياً ☁️";
@@ -328,5 +486,4 @@
     });
 </script>
 </body>
-    </html>
-    
+</html>
