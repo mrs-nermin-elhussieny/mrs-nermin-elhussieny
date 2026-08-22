@@ -285,26 +285,24 @@
 <body>
 
 <div class="container">
-    <!-- Header -->
-    <div class="header-card">
+    <div class="header-card" id="mainHeader">
         <h1>تقرير متابعة الطلاب</h1>
         <p>نظام استعلام درجات ومتابعة الطلاب الشهري</p>
         <div class="teacher-name">الأستاذة / نرمين الحسيني</div>
         <div class="year-badge">العام الدراسي 2026/2027</div>
     </div>
 
-    <!-- ================= VIEW 1: STUDENT SEARCH ================= -->
+    <!-- VIEW 1: STUDENT SEARCH -->
     <div id="studentView">
         <div class="card">
             <div class="input-group">
                 <label for="studentCode">أدخل كود الطالب</label>
-                <input type="number" id="studentCode" class="input-field" placeholder="أدخل كود الطالب">
+                <input type="number" id="studentCode" class="input-field" placeholder="أدخل الكود هنا">
                 <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
                 <div id="searchError" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
             </div>
         </div>
 
-        <!-- Result Section -->
         <div id="resultCard" class="card hidden" style="margin-top: 15px;">
             <div class="student-badge">
                 <div class="title">كود الطالب</div>
@@ -320,20 +318,17 @@
 
             <div id="resPayment" class="payment-tag payment-paid">تم سداد المصروفات</div>
 
-            <!-- التقييم النهائي الكلي -->
             <div class="score-box">
                 <div style="font-size: 13px;">التقييم النهائي</div>
                 <div class="score-num" id="resFinalGrade">-</div>
             </div>
 
-            <!-- درجة الاختبار الشهري -->
             <div class="section-title">الاختبار الشهري</div>
             <div class="lesson-card highlight">
                 <div class="title">درجة الاختبار الشهري (من 50)</div>
                 <div class="val" id="resMonthlyExam">0 / 50</div>
             </div>
 
-            <!-- التقييمات الأسبوعية -->
             <div class="section-title">التقييم الأسبوعي (من 20)</div>
             <div class="grid-2">
                 <div class="lesson-card">
@@ -358,14 +353,12 @@
                 <div class="val" id="resWeeklyFinal">0 / 20</div>
             </div>
 
-            <!-- تقييم الوحدة -->
             <div class="section-title">تقييم الوحدة</div>
             <div class="lesson-card highlight">
                 <div class="title">درجة تقييم الوحدة (من 20)</div>
                 <div class="val" id="resUnit">0 / 20</div>
             </div>
 
-            <!-- شرائح الحصص -->
             <div class="section-title">درجة شرائح الحصة (من 10)</div>
             <div class="grid-2">
                 <div class="lesson-card">
@@ -388,11 +381,11 @@
         </div>
     </div>
 
-    <!-- ================= VIEW 2: ADMIN LOGIN ================= -->
+    <!-- VIEW 2: ADMIN LOGIN -->
     <div id="adminLoginView" class="card hidden">
-        <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">دفتر متابعة المعلمة 📝</h2>
+        <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">لوحة التحكم 📝</h2>
         <div class="input-group">
-            <label for="adminPass">كلمة المرور الخاصة بالمصرح لهم فقط:</label>
+            <label for="adminPass">كلمة المرور:</label>
             <input type="password" id="adminPass" class="input-field" placeholder="أدخلي كلمة السر">
             <button class="btn btn-admin" onclick="checkAdminPassword()">تسجيل الدخول</button>
             <button class="btn btn-secondary" onclick="showStudentSearch()">العودة للموقع الرئيسي</button>
@@ -400,7 +393,7 @@
         </div>
     </div>
 
-    <!-- ================= VIEW 3: ADMIN DASHBOARD ================= -->
+    <!-- VIEW 3: ADMIN DASHBOARD -->
     <div id="adminDashboardView" class="hidden">
         <div class="card">
             <h3 style="margin-bottom: 15px; color: var(--primary-green);">إضافة أو تعديل طالب ✏️</h3>
@@ -408,10 +401,10 @@
                 <label>الصف الدراسي</label>
                 <select id="admClass" class="select-field" onchange="updateGroupOptions()">
                     <option value="">اختر الصف الدراسي</option>
-                    <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي (بداية الأكواد: 3123)</option>
-                    <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي (بداية الأكواد: 4123)</option>
-                    <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي (بداية الأكواد: 5123)</option>
-                    <option value="الصف السادس الابتدائي">الصف السادس الابتدائي (بداية الأكواد: 6123)</option>
+                    <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+                    <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+                    <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+                    <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
                 </select>
 
                 <label>المجموعة</label>
@@ -449,7 +442,7 @@
                 <input type="number" id="admMonthlyExam" class="input-field" placeholder="درجة الاختبار الشهري">
 
                 <label>التقييم النهائي</label>
-                <input type="text" id="admFinalGrade" class="input-field" placeholder="مثال: ممتاز / 95% / A+">
+                <input type="text" id="admFinalGrade" class="input-field" placeholder="مثال: ممتاز / 95%">
 
                 <label>درجات شرائح الحصة (من 10)</label>
                 <div class="form-row">
@@ -469,7 +462,6 @@
 
         <button class="btn btn-secondary" onclick="showStudentSearch()" style="margin-top: 15px;">الخروج من لوحة التحكم</button>
     </div>
-
 </div>
 
 <script>
@@ -489,10 +481,10 @@
             group: "مجموعة السبت والثلاثاء الساعة 5",
             payment: "paid",
             w1: "20", w2: "19", w3: "20", w4: "18",
-            weeklyFinal: "19.25",
+            weeklyFinal: "19",
             unit: "20",
             monthlyExam: "48",
-            finalGrade: "ممتاز (96%)",
+            finalGrade: "ممتاز",
             l1: "10", l2: "10", l3: "9", l4: "10"
         }
     };
@@ -539,7 +531,6 @@
             document.getElementById('resClass').innerText = student.grade;
             document.getElementById('resGroup').innerText = student.group;
             
-            // حالة الدفع
             const payElem = document.getElementById('resPayment');
             if (student.payment === 'unpaid') {
                 payElem.innerText = "لم يتم سداد المصروفات";
@@ -565,4 +556,103 @@
             document.getElementById('l3').innerText = (student.l3 || "0") + " / 10";
             document.getElementById('l4').innerText = (student.l4 || "0") + " / 10";
 
-            err
+            errorDiv.classList.add('hidden');
+            resultCard.classList.remove('hidden');
+        } else {
+            resultCard.classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    function showAdminLogin() {
+        document.getElementById('studentView').classList.add('hidden');
+        document.getElementById('adminLoginView').classList.remove('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    function showStudentSearch() {
+        document.getElementById('studentView').classList.remove('hidden');
+        document.getElementById('adminLoginView').classList.add('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+    }
+
+    function checkAdminPassword() {
+        const pass = document.getElementById('adminPass').value;
+        const err = document.getElementById('loginError');
+
+        if (pass === ADMIN_PASSWORD) {
+            err.classList.add('hidden');
+            document.getElementById('adminLoginView').classList.add('hidden');
+            document.getElementById('adminDashboardView').classList.remove('hidden');
+        } else {
+            err.classList.remove('hidden');
+        }
+    }
+
+    function saveStudentData() {
+        const code = document.getElementById('admCode').value.trim();
+        const name = document.getElementById('admName').value.trim();
+        const grade = document.getElementById('admClass').value;
+        const group = document.getElementById('admGroup').value;
+        const payment = document.getElementById('admPayment').value;
+        
+        const w1 = document.getElementById('admW1').value.trim() || "0";
+        const w2 = document.getElementById('admW2').value.trim() || "0";
+        const w3 = document.getElementById('admW3').value.trim() || "0";
+        const w4 = document.getElementById('admW4').value.trim() || "0";
+        const weeklyFinal = document.getElementById('admWeeklyFinal').value.trim() || "0";
+
+        const unit = document.getElementById('admUnit').value.trim() || "0";
+        const monthlyExam = document.getElementById('admMonthlyExam').value.trim() || "0";
+        const finalGrade = document.getElementById('admFinalGrade').value.trim() || "-";
+
+        const l1 = document.getElementById('admL1').value.trim() || "0";
+        const l2 = document.getElementById('admL2').value.trim() || "0";
+        const l3 = document.getElementById('admL3').value.trim() || "0";
+        const l4 = document.getElementById('admL4').value.trim() || "0";
+
+        const err = document.getElementById('admError');
+        const succ = document.getElementById('admSuccess');
+
+        if (!code || !name || !grade || !group) {
+            err.classList.remove('hidden');
+            succ.classList.add('hidden');
+            return;
+        }
+
+        const db = getStoredData();
+        db[code] = {
+            name: name,
+            grade: grade,
+            group: group,
+            payment: payment,
+            w1: w1, w2: w2, w3: w3, w4: w4,
+            weeklyFinal: weeklyFinal,
+            unit: unit,
+            monthlyExam: monthlyExam,
+            finalGrade: finalGrade,
+            l1: l1, l2: l2, l3: l3, l4: l4
+        };
+
+        saveDataToStorage(db);
+
+        err.classList.add('hidden');
+        succ.classList.remove('hidden');
+
+        setTimeout(() => {
+            succ.classList.add('hidden');
+        }, 3000);
+    }
+
+    let headerClicks = 0;
+    document.getElementById('mainHeader').addEventListener('click', function() {
+        headerClicks++;
+        if (headerClicks >= 5) {
+            showAdminLogin();
+            headerClicks = 0;
+        }
+    });
+</script>
+
+</body>
+</html>
