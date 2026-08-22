@@ -12,7 +12,6 @@
             --light-green: #eef7f4;
             --card-yellow: #fef8dd;
             --accent-yellow: #eedf9b;
-            --pink-bg: #fde8e8;
             --text-dark: #2c3e50;
         }
 
@@ -47,6 +46,7 @@
             text-align: right;
             position: relative;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
 
         .header-card h1 {
@@ -93,7 +93,7 @@
 
         .input-group label {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .input-field, .select-field {
@@ -176,6 +176,25 @@
             background-color: var(--card-yellow);
         }
 
+        .payment-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .payment-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .payment-unpaid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
         .score-box {
             background-color: var(--primary-green);
             color: white;
@@ -206,9 +225,15 @@
             text-align: center;
         }
 
+        .lesson-card.highlight {
+            background: #f0f7f5;
+            border: 1px solid #b2dfdb;
+        }
+
         .lesson-card .title {
             font-size: 12px;
-            color: #777;
+            color: #555;
+            font-weight: bold;
         }
 
         .lesson-card .val {
@@ -216,6 +241,16 @@
             font-weight: 800;
             color: var(--primary-green);
             margin-top: 2px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--light-green);
+            padding-bottom: 4px;
         }
 
         .hidden {
@@ -242,7 +277,7 @@
             margin-bottom: 10px;
         }
 
-        .form-row input {
+        .form-row input, .form-row select {
             flex: 1;
         }
     </style>
@@ -258,12 +293,12 @@
         <div class="year-badge">العام الدراسي 2026/2027</div>
     </div>
 
-    <!-- ================= VIEW 1: STUDENT SEARCH (ولياء الأمور) ================= -->
+    <!-- ================= VIEW 1: STUDENT SEARCH ================= -->
     <div id="studentView">
         <div class="card">
             <div class="input-group">
                 <label for="studentCode">أدخل كود الطالب</label>
-                <input type="number" id="studentCode" class="input-field" placeholder="أدخل كود الطالب الخاص بك">
+                <input type="number" id="studentCode" class="input-field" placeholder="أدخل كود الطالب">
                 <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
                 <div id="searchError" class="error-msg hidden">الكود غير صحيح أو غير موجود</div>
             </div>
@@ -283,37 +318,77 @@
                 <span class="tag yellow" id="resGroup">-</span>
             </div>
 
+            <div id="resPayment" class="payment-tag payment-paid">تم سداد المصروفات</div>
+
+            <!-- التقييم النهائي الكلي -->
             <div class="score-box">
-                <div style="font-size: 13px;">مجموع الشهر من 100</div>
-                <div class="score-num" id="resTotal">0.0</div>
-                <div style="font-size: 13px;" id="resPercent">نسبة الدرجات: 0.0%</div>
+                <div style="font-size: 13px;">التقييم النهائي</div>
+                <div class="score-num" id="resFinalGrade">-</div>
             </div>
 
-            <div style="margin-top: 15px;">
-                <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px;">درجة شرائح الحصة (من 10)</div>
-                <div class="grid-2">
-                    <div class="lesson-card">
-                        <div class="title">الحصة 1</div>
-                        <div class="val" id="l1">0</div>
-                    </div>
-                    <div class="lesson-card">
-                        <div class="title">الحصة 2</div>
-                        <div class="val" id="l2">0</div>
-                    </div>
-                    <div class="lesson-card">
-                        <div class="title">الحصة 3</div>
-                        <div class="val" id="l3">0</div>
-                    </div>
-                    <div class="lesson-card">
-                        <div class="title">الحصة 4</div>
-                        <div class="val" id="l4">0</div>
-                    </div>
+            <!-- درجة الاختبار الشهري -->
+            <div class="section-title">الاختبار الشهري</div>
+            <div class="lesson-card highlight">
+                <div class="title">درجة الاختبار الشهري (من 50)</div>
+                <div class="val" id="resMonthlyExam">0 / 50</div>
+            </div>
+
+            <!-- التقييمات الأسبوعية -->
+            <div class="section-title">التقييم الأسبوعي (من 20)</div>
+            <div class="grid-2">
+                <div class="lesson-card">
+                    <div class="title">الأسبوع 1</div>
+                    <div class="val" id="w1">0 / 20</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الأسبوع 2</div>
+                    <div class="val" id="w2">0 / 20</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الأسبوع 3</div>
+                    <div class="val" id="w3">0 / 20</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الأسبوع 4</div>
+                    <div class="val" id="w4">0 / 20</div>
+                </div>
+            </div>
+            <div class="lesson-card highlight" style="margin-top: 10px;">
+                <div class="title">الدرجة النهائية للتقييم الأسبوعي</div>
+                <div class="val" id="resWeeklyFinal">0 / 20</div>
+            </div>
+
+            <!-- تقييم الوحدة -->
+            <div class="section-title">تقييم الوحدة</div>
+            <div class="lesson-card highlight">
+                <div class="title">درجة تقييم الوحدة (من 20)</div>
+                <div class="val" id="resUnit">0 / 20</div>
+            </div>
+
+            <!-- شرائح الحصص -->
+            <div class="section-title">درجة شرائح الحصة (من 10)</div>
+            <div class="grid-2">
+                <div class="lesson-card">
+                    <div class="title">الحصة 1</div>
+                    <div class="val" id="l1">0 / 10</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 2</div>
+                    <div class="val" id="l2">0 / 10</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 3</div>
+                    <div class="val" id="l3">0 / 10</div>
+                </div>
+                <div class="lesson-card">
+                    <div class="title">الحصة 4</div>
+                    <div class="val" id="l4">0 / 10</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================= VIEW 2: ADMIN LOGIN (مخفي عن ولي الأمر) ================= -->
+    <!-- ================= VIEW 2: ADMIN LOGIN ================= -->
     <div id="adminLoginView" class="card hidden">
         <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary-green);">دفتر متابعة المعلمة 📝</h2>
         <div class="input-group">
@@ -350,7 +425,33 @@
                 <label>اسم الطالب</label>
                 <input type="text" id="admName" class="input-field" placeholder="الاسم الثلاثي">
 
-                <label>درجات الحصص (من 10)</label>
+                <label>حالة الدفع الشهري</label>
+                <select id="admPayment" class="select-field">
+                    <option value="paid">تم السداد</option>
+                    <option value="unpaid">لم يتم السداد</option>
+                </select>
+
+                <label>التقييم الأسبوعي (4 أسابيع - من 20)</label>
+                <div class="form-row">
+                    <input type="number" id="admW1" class="input-field" placeholder="أسبوع 1">
+                    <input type="number" id="admW2" class="input-field" placeholder="أسبوع 2">
+                </div>
+                <div class="form-row">
+                    <input type="number" id="admW3" class="input-field" placeholder="أسبوع 3">
+                    <input type="number" id="admW4" class="input-field" placeholder="أسبوع 4">
+                </div>
+                <input type="number" id="admWeeklyFinal" class="input-field" placeholder="الدرجة النهائية للتقييم الأسبوعي (من 20)">
+
+                <label>تقييم الوحدة (من 20)</label>
+                <input type="number" id="admUnit" class="input-field" placeholder="درجة تقييم الوحدة">
+
+                <label>درجة الاختبار الشهري (من 50)</label>
+                <input type="number" id="admMonthlyExam" class="input-field" placeholder="درجة الاختبار الشهري">
+
+                <label>التقييم النهائي</label>
+                <input type="text" id="admFinalGrade" class="input-field" placeholder="مثال: ممتاز / 95% / A+">
+
+                <label>درجات شرائح الحصة (من 10)</label>
                 <div class="form-row">
                     <input type="number" id="admL1" class="input-field" placeholder="حصة 1">
                     <input type="number" id="admL2" class="input-field" placeholder="حصة 2">
@@ -359,9 +460,6 @@
                     <input type="number" id="admL3" class="input-field" placeholder="حصة 3">
                     <input type="number" id="admL4" class="input-field" placeholder="حصة 4">
                 </div>
-
-                <label>المجموع الكلي للشهر (من 100)</label>
-                <input type="number" id="admTotal" class="input-field" placeholder="مثال: 95">
 
                 <button class="btn btn-admin" onclick="saveStudentData()">حفظ البيانات 💾</button>
                 <div id="admSuccess" class="success-msg hidden">تم حفظ بيانات الطالب بنجاح!</div>
@@ -375,61 +473,27 @@
 </div>
 
 <script>
-    // كلمة المرور الخاصة بكِ فقط
     const ADMIN_PASSWORD = "nermin2535";
 
-    // قائمة المجموعات حسب الصفوف
     const groupsByClass = {
-        "الصف الثالث الابتدائي": [
-            "مجموعة السبت والثلاثاء الساعة 5"
-        ],
-        "الصف الرابع الابتدائي": [
-            "مجموعة الأحد والأربعاء الساعة 6",
-            "مجموعة الاثنين والخميس الساعة 7 وربع"
-        ],
-        "الصف الخامس الابتدائي": [
-            "مجموعة السبت والثلاثاء الساعة 6",
-            "مجموعة السبت والثلاثاء الساعة 7 وربع",
-            "مجموعة الأحد والأربعاء الساعة 5"
-        ],
-        "الصف السادس الابتدائي": [
-            "مجموعة الأحد والأربعاء الساعة 7 وربع"
-        ]
+        "الصف الثالث الابتدائي": ["مجموعة السبت والثلاثاء الساعة 5"],
+        "الصف الرابع الابتدائي": ["مجموعة الأحد والأربعاء الساعة 6", "مجموعة الاثنين والخميس الساعة 7 وربع"],
+        "الصف الخامس الابتدائي": ["مجموعة السبت والثلاثاء الساعة 6", "مجموعة السبت والثلاثاء الساعة 7 وربع", "مجموعة الأحد والأربعاء الساعة 5"],
+        "الصف السادس الابتدائي": ["مجموعة الأحد والأربعاء الساعة 7 وربع"]
     };
 
-    // بيانات أولية للبدء
     const defaultData = {
         "3123": {
-            name: "طالب تجريبي (الصف الثالث)",
+            name: "طالب تجريبي",
             grade: "الصف الثالث الابتدائي",
             group: "مجموعة السبت والثلاثاء الساعة 5",
-            total: "100.0",
-            percent: "100%",
-            l1: "10", l2: "10", l3: "10", l4: "10"
-        },
-        "4123": {
-            name: "طالب تجريبي (الصف الرابع)",
-            grade: "الصف الرابع الابتدائي",
-            group: "مجموعة الأحد والأربعاء الساعة 6",
-            total: "90.0",
-            percent: "90%",
-            l1: "9", l2: "9", l3: "9", l4: "9"
-        },
-        "5123": {
-            name: "طالب تجريبي (الصف الخامس)",
-            grade: "الصف الخامس الابتدائي",
-            group: "مجموعة السبت والثلاثاء الساعة 6",
-            total: "85.0",
-            percent: "85%",
-            l1: "8", l2: "9", l3: "8", l4: "9"
-        },
-        "6123": {
-            name: "طالب تجريبي (الصف السادس)",
-            grade: "الصف السادس الابتدائي",
-            group: "مجموعة الأحد والأربعاء الساعة 7 وربع",
-            total: "95.0",
-            percent: "95%",
-            l1: "10", l2: "9", l3: "10", l4: "9"
+            payment: "paid",
+            w1: "20", w2: "19", w3: "20", w4: "18",
+            weeklyFinal: "19.25",
+            unit: "20",
+            monthlyExam: "48",
+            finalGrade: "ممتاز (96%)",
+            l1: "10", l2: "10", l3: "9", l4: "10"
         }
     };
 
@@ -474,101 +538,31 @@
             document.getElementById('resName').innerText = student.name;
             document.getElementById('resClass').innerText = student.grade;
             document.getElementById('resGroup').innerText = student.group;
-            document.getElementById('resTotal').innerText = student.total;
-            document.getElementById('resPercent').innerText = "نسبة الدرجات: " + student.percent;
             
-            document.getElementById('l1').innerText = student.l1;
-            document.getElementById('l2').innerText = student.l2;
-            document.getElementById('l3').innerText = student.l3;
-            document.getElementById('l4').innerText = student.l4;
+            // حالة الدفع
+            const payElem = document.getElementById('resPayment');
+            if (student.payment === 'unpaid') {
+                payElem.innerText = "لم يتم سداد المصروفات";
+                payElem.className = "payment-tag payment-unpaid";
+            } else {
+                payElem.innerText = "تم سداد المصروفات";
+                payElem.className = "payment-tag payment-paid";
+            }
 
-            errorDiv.classList.add('hidden');
-            resultCard.classList.remove('hidden');
-        } else {
-            resultCard.classList.add('hidden');
-            errorDiv.classList.remove('hidden');
-        }
-    }
+            document.getElementById('resFinalGrade').innerText = student.finalGrade || "-";
+            document.getElementById('resMonthlyExam').innerText = (student.monthlyExam || "0") + " / 50";
+            
+            document.getElementById('w1').innerText = (student.w1 || "0") + " / 20";
+            document.getElementById('w2').innerText = (student.w2 || "0") + " / 20";
+            document.getElementById('w3').innerText = (student.w3 || "0") + " / 20";
+            document.getElementById('w4').innerText = (student.w4 || "0") + " / 20";
+            document.getElementById('resWeeklyFinal').innerText = (student.weeklyFinal || "0") + " / 20";
 
-    function showAdminLogin() {
-        document.getElementById('studentView').classList.add('hidden');
-        document.getElementById('adminLoginView').classList.remove('hidden');
-        document.getElementById('adminDashboardView').classList.add('hidden');
-    }
+            document.getElementById('resUnit').innerText = (student.unit || "0") + " / 20";
 
-    function showStudentSearch() {
-        document.getElementById('studentView').classList.remove('hidden');
-        document.getElementById('adminLoginView').classList.add('hidden');
-        document.getElementById('adminDashboardView').classList.add('hidden');
-    }
+            document.getElementById('l1').innerText = (student.l1 || "0") + " / 10";
+            document.getElementById('l2').innerText = (student.l2 || "0") + " / 10";
+            document.getElementById('l3').innerText = (student.l3 || "0") + " / 10";
+            document.getElementById('l4').innerText = (student.l4 || "0") + " / 10";
 
-    function checkAdminPassword() {
-        const pass = document.getElementById('adminPass').value;
-        const err = document.getElementById('loginError');
-
-        if (pass === ADMIN_PASSWORD) {
-            err.classList.add('hidden');
-            document.getElementById('adminLoginView').classList.add('hidden');
-            document.getElementById('adminDashboardView').classList.remove('hidden');
-        } else {
-            err.classList.remove('hidden');
-        }
-    }
-
-    function saveStudentData() {
-        const code = document.getElementById('admCode').value.trim();
-        const name = document.getElementById('admName').value.trim();
-        const grade = document.getElementById('admClass').value;
-        const group = document.getElementById('admGroup').value;
-        const l1 = document.getElementById('admL1').value.trim() || "0";
-        const l2 = document.getElementById('admL2').value.trim() || "0";
-        const l3 = document.getElementById('admL3').value.trim() || "0";
-        const l4 = document.getElementById('admL4').value.trim() || "0";
-        const total = document.getElementById('admTotal').value.trim() || "0";
-
-        const err = document.getElementById('admError');
-        const succ = document.getElementById('admSuccess');
-
-        if (!code || !name || !grade || !group) {
-            err.classList.remove('hidden');
-            succ.classList.add('hidden');
-            return;
-        }
-
-        const db = getStoredData();
-        db[code] = {
-            name: name,
-            grade: grade,
-            group: group,
-            total: total,
-            percent: total + "%",
-            l1: l1,
-            l2: l2,
-            l3: l3,
-            l4: l4
-        };
-
-        saveDataToStorage(db);
-
-        err.classList.add('hidden');
-        succ.classList.remove('hidden');
-
-        setTimeout(() => {
-            succ.classList.add('hidden');
-        }, 3000);
-    }
-
-    // طريقة خاصة وسرية للدخول لوحة التحكم بدون إظهار أي رابط لولي الأمر
-    // يتم الضغط 5 ضغطات متتالية على عنوان التقرير (Header) للفتح
-    let headerClicks = 0;
-    document.querySelector('.header-card').addEventListener('click', function() {
-        headerClicks++;
-        if (headerClicks >= 5) {
-            showAdminLogin();
-            headerClicks = 0;
-        }
-    });
-</script>
-
-</body>
-</html>
+            err
