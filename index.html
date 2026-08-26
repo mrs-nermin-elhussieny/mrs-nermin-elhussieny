@@ -110,7 +110,7 @@
                 <div class="lesson-card">حصة 4: <b id="l4">0</b></div>
             </div>
 
-            <div class="section-title">💻 التدريب أون لاين (من 10)</div>
+            <div class="section-title">💻 التدريب أون لاين (من Google Sheets)</div>
             <div class="grid-4">
                 <div class="lesson-card">ح1: <b id="on1" style="color:#2e7d32;">0</b></div>
                 <div class="lesson-card">ح2: <b id="on2" style="color:#2e7d32;">0</b></div>
@@ -154,7 +154,7 @@
                 <select id="admGroup" class="select-field" onchange="renderGroupStudents()"><option value="">اختر المجموعة</option></select>
 
                 <div id="groupStudentsContainer" class="hidden">
-                    <label style="font-size: 12px; font-weight: bold; color: var(--primary-green);">طلاب هذه المجموعة (اضغط تعديل لجلب بيانات الطالب):</label>
+                    <label style="font-size: 12px; font-weight: bold; color: var(--primary-green);">طلاب هذه المجموعة:</label>
                     <div class="student-list-container" id="groupStudentsList"></div>
                 </div>
 
@@ -201,21 +201,7 @@
                     <input type="number" id="admL4" class="input-field" placeholder="ح4">
                 </div>
 
-                <label style="font-size: 13px; font-weight: bold;">درجات التدريب أون لاين (8 حصص)</label>
-                <div class="form-row">
-                    <input type="number" id="admOn1" class="input-field" placeholder="ح1">
-                    <input type="number" id="admOn2" class="input-field" placeholder="ح2">
-                    <input type="number" id="admOn3" class="input-field" placeholder="ح3">
-                    <input type="number" id="admOn4" class="input-field" placeholder="ح4">
-                </div>
-                <div class="form-row" style="margin-top: 5px;">
-                    <input type="number" id="admOn5" class="input-field" placeholder="ح5">
-                    <input type="number" id="admOn6" class="input-field" placeholder="ح6">
-                    <input type="number" id="admOn7" class="input-field" placeholder="ح7">
-                    <input type="number" id="admOn8" class="input-field" placeholder="ح8">
-                </div>
-
-                <button class="btn btn-admin" id="saveBtn" onclick="saveStudentData()">حفظ التعديل سحابياً ☁️</button>
+                <button class="btn btn-admin" id="saveBtn" onclick="saveStudentData()">حفظ البيانات سحابياً ☁️</button>
                 <button class="btn btn-secondary" onclick="clearAdminForm()">تفريغ الخانات 🔄</button>
                 <div id="admSuccess" class="success-msg hidden">تم الحفظ بنجاح! ✅</div>
             </div>
@@ -228,6 +214,7 @@
     const ADMIN_PASSWORD = "nermin2535";
     const BIN_ID = "6a898156f5f4af5e2934ddeb";
     const API_KEY = "$2a$10$SQSCbL578Jwl71gYZypgTutGVUFF2LuIKGiSIkOIufrJodN6/U96a";
+    const SHEET_ID = "1Pdciq2jzHGzmRkrby692YhvfdBqfwkosRlqRCfmDkFs";
 
     const monthNames = [
         "", "الشهر الأول", "الشهر الثاني", "الشهر الثالث", "الشهر الرابع",
@@ -242,22 +229,42 @@
     };
 
     let globalData = {};
+    let sheetScores = {};
 
     async function loadCloudData() {
         try {
             let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 
-                    "X-Master-Key": API_KEY,
-                    "X-Bin-Meta": "false"
-                }
+                headers: { "X-Master-Key": API_KEY, "X-Bin-Meta": "false" }
             });
             globalData = await res.json();
             if (globalData.record) globalData = globalData.record;
         } catch (e) {
-            console.error("خطأ في التحميل", e);
+            console.error("خطأ في تحميل البيانات", e);
         }
     }
+
+    async function fetchSheetScores() {
+        try {
+            let res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
+            let txt = await res.text();
+            let json = JSON.parse(txt.substring(47, txt.length - 2));
+            let rows = json.table.rows;
+            sheetScores = {};
+
+            rows.forEach(r => {
+                if (r.c[0] && r.c[1]) {
+                    let code = r.c[0].v ? r.c[0].v.toString().trim() : "";
+                    let score = r.c[1].v !== undefined ? r.c[1].v : 0;
+                    if (code) sheetScores[code] = score;
+                }
+            });
+        } catch (e) {
+            console.error("خطأ في قراءة درجات الشيت", e);
+        }
+    }
+
     loadCloudData();
+    fetchSheetScores();
 
     function showAdminLogin() {
         document.getElementById('studentView').classList.add('hidden');
@@ -342,15 +349,6 @@
             document.getElementById('admL2').value = st.l2 || "";
             document.getElementById('admL3').value = st.l3 || "";
             document.getElementById('admL4').value = st.l4 || "";
-            
-            document.getElementById('admOn1').value = st.on1 || "";
-            document.getElementById('admOn2').value = st.on2 || "";
-            document.getElementById('admOn3').value = st.on3 || "";
-            document.getElementById('admOn4').value = st.on4 || "";
-            document.getElementById('admOn5').value = st.on5 || "";
-            document.getElementById('admOn6').value = st.on6 || "";
-            document.getElementById('admOn7').value = st.on7 || "";
-            document.getElementById('admOn8').value = st.on8 || "";
 
             window.scrollTo({ top: document.getElementById('admCode').offsetTop - 100, behavior: 'smooth' });
         }
@@ -370,21 +368,14 @@
         document.getElementById('admFinalGrade').value = "";
         document.getElementById('admL1').value = "";
         document.getElementById('admL2').value = "";
-        document.getElementById('admL3').value = "";
+                document.getElementById('admL3').value = "";
         document.getElementById('admL4').value = "";
-        
-        document.getElementById('admOn1').value = "";
-        document.getElementById('admOn2').value = "";
-        document.getElementById('admOn3').value = "";
-        document.getElementById('admOn4').value = "";
-        document.getElementById('admOn5').value = "";
-        document.getElementById('admOn6').value = "";
-        document.getElementById('admOn7').value = "";
-        document.getElementById('admOn8').value = "";
     }
 
     async function searchStudent() {
         await loadCloudData();
+        await fetchSheetScores();
+        
         const code = document.getElementById('studentCode').value.trim();
         const errorDiv = document.getElementById('searchError');
         const resultCard = document.getElementById('resultCard');
@@ -440,7 +431,9 @@
             document.getElementById('l3').innerText = st.l3 || 0;
             document.getElementById('l4').innerText = st.l4 || 0;
 
-            document.getElementById('on1').innerText = st.on1 || 0;
+            // أخذ الدرجة أوتوماتيكياً من شيت الجوجل بناءً على كود الطالب
+            let autoScore = sheetScores[code] !== undefined ? sheetScores[code] : 0;
+            document.getElementById('on1').innerText = autoScore;
             document.getElementById('on2').innerText = st.on2 || 0;
             document.getElementById('on3').innerText = st.on3 || 0;
             document.getElementById('on4').innerText = st.on4 || 0;
@@ -497,16 +490,7 @@
             l1: document.getElementById('admL1').value,
             l2: document.getElementById('admL2').value,
             l3: document.getElementById('admL3').value,
-            l4: document.getElementById('admL4').value,
-
-            on1: document.getElementById('admOn1').value,
-            on2: document.getElementById('admOn2').value,
-            on3: document.getElementById('admOn3').value,
-            on4: document.getElementById('admOn4').value,
-            on5: document.getElementById('admOn5').value,
-            on6: document.getElementById('admOn6').value,
-            on7: document.getElementById('admOn7').value,
-            on8: document.getElementById('admOn8').value
+            l4: document.getElementById('admL4').value
         };
 
         try {
