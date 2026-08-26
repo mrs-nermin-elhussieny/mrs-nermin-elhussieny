@@ -251,8 +251,8 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
             sheetScores = {};
 
             rows.forEach(r => {
-                if (r.c[0] && r.c[1]) {
-                    let code = r.c[0].v ? r.c[0].v.toString().trim() : "";
+            if (r.c[3] && r.c[1]) {
+                    let code = r.c[3].v
                     let score = r.c[1].v !== undefined ? r.c[1].v : 0;
                     if (code) sheetScores[code] = score;
                 }
