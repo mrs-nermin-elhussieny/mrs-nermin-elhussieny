@@ -63,7 +63,7 @@
         <div class="card">
             <div class="input-group">
                 <label>أدخل كود الطالب</label>
-                <input type="number" id="studentCode" class="input-field" placeholder="الكود هنا">
+                <input type="text" id="studentCode" class="input-field" placeholder="الكود هنا">
                 <button class="btn" onclick="searchStudent()">عرض التقرير 📄</button>
                 <div id="searchError" class="error-msg hidden">الكود غير موجود</div>
             </div>
@@ -92,7 +92,7 @@
 
             <div class="section-title">التقييم الأسبوعي</div>
             <div class="grid-2">
-                <div class="lesson-card">أسبوع 1: <b id="w1">0</b></div>
+                <div class="lesson-card">أسبوع 1: <b id="w1" style="color:#0b4f42;">0</b></div>
                 <div class="lesson-card">أسبوع 2: <b id="w2">0</b></div>
                 <div class="lesson-card">أسبوع 3: <b id="w3">0</b></div>
                 <div class="lesson-card">أسبوع 4: <b id="w4">0</b></div>
@@ -160,7 +160,7 @@
 
                 <hr style="margin: 10px 0; border: none; border-top: 1px dashed #ccc;">
 
-                <input type="number" id="admCode" class="input-field" placeholder="كود الطالب">
+                <input type="text" id="admCode" class="input-field" placeholder="كود الطالب">
                 <input type="text" id="admName" class="input-field" placeholder="اسم الطالب">
 
                 <label style="font-size: 13px; font-weight: bold;">آخر شهر تم سداده:</label>
@@ -214,7 +214,8 @@
     const ADMIN_PASSWORD = "nermin2535";
     const BIN_ID = "6a898156f5f4af5e2934ddeb";
     const API_KEY = "$2a$10$SQSCbL578Jwl71gYZypgTutGVUFF2LuIKGiSIkOIufrJodN6/U96a";
-const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
+    const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
+
     const monthNames = [
         "", "الشهر الأول", "الشهر الثاني", "الشهر الثالث", "الشهر الرابع",
         "الشهر الخامس", "الشهر السادس", "الشهر السابع", "الشهر الثامن"
@@ -229,6 +230,11 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
 
     let globalData = {};
     let sheetScores = {};
+
+    function normalizeCode(str) {
+        if (!str) return "";
+        return str.toString().trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    }
 
     async function loadCloudData() {
         try {
@@ -251,9 +257,9 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
             sheetScores = {};
 
             rows.forEach(r => {
-            if (r.c[3] && r.c[1]) {
-                    let code = r.c[3].v
-                    let score = r.c[1].v !== undefined ? r.c[1].v : 0;
+                if (r.c && r.c[3] && r.c[3].v !== null && r.c[1] && r.c[1].v !== null) {
+                    let code = normalizeCode(r.c[3].v);
+                    let score = normalizeCode(r.c[1].v);
                     if (code) sheetScores[code] = score;
                 }
             });
@@ -265,9 +271,86 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
     loadCloudData();
     fetchSheetScores();
 
+    function searchStudent() {
+        let inputCode = normalizeCode(document.getElementById('studentCode').value);
+        let errorDiv = document.getElementById('searchError');
+        let resultCard = document.getElementById('resultCard');
+
+        if (!inputCode || !globalData[inputCode]) {
+            errorDiv.classList.remove('hidden');
+            resultCard.classList.add('hidden');
+            return;
+        }
+
+        errorDiv.classList.add('hidden');
+        resultCard.classList.remove('hidden');
+
+        let st = globalData[inputCode];
+        document.getElementById('resCode').innerText = inputCode;
+        document.getElementById('resName').innerText = st.name || "-";
+        document.getElementById('resClass').innerText = st.grade || "-";
+        document.getElementById('resGroup').innerText = st.group || "-";
+
+        // السداد الشهري
+        let payContainer = document.getElementById('resPaymentList');
+        payContainer.innerHTML = "";
+        let paidMonth = st.paidMonth !== undefined ? parseInt(st.paidMonth) : (st.payment === 'unpaid' ? 0 : 1);
+        for (let i = 1; i <= 8; i++) {
+            let isPaid = i <= paidMonth;
+            let item = document.createElement('div');
+            item.className = 'payment-status-item';
+            item.innerHTML = `<span>${monthNames[i]}</span><span class="status-badge ${isPaid ? 'status-paid' : 'status-due'}">${isPaid ? 'تم السداد ✅' : 'مستحق السداد ⚠️'}</span>`;
+            payContainer.appendChild(item);
+        }
+
+        document.getElementById('resFinalGrade').innerText = st.finalGrade || "-";
+        document.getElementById('resMonthlyExam').innerText = (st.monthlyExam || 0) + " / 50";
+
+        // إظهار درجة الشيت في أسبوع 1 وفي تدريب أونلاين ح1 معاً
+        let sheetScore = sheetScores[inputCode];
+        document.getElementById('w1').innerText = sheetScore !== undefined ? sheetScore : (st.w1 || 0);
+        document.getElementById('w2').innerText = st.w2 || 0;
+        document.getElementById('w3').innerText = st.w3 || 0;
+        document.getElementById('w4').innerText = st.w4 || 0;
+        document.getElementById('resWeeklyFinal').innerText = st.weeklyFinal || 0;
+
+        document.getElementById('resUnit').innerText = (st.unit || 0) + " / 20";
+
+        document.getElementById('l1').innerText = st.l1 || 0;
+        document.getElementById('l2').innerText = st.l2 || 0;
+        document.getElementById('l3').innerText = st.l3 || 0;
+        document.getElementById('l4').innerText = st.l4 || 0;
+
+        document.getElementById('on1').innerText = sheetScore !== undefined ? sheetScore : (st.on1 || 0);
+        document.getElementById('on2').innerText = st.on2 || 0;
+        document.getElementById('on3').innerText = st.on3 || 0;
+        document.getElementById('on4').innerText = st.on4 || 0;
+        document.getElementById('on5').innerText = st.on5 || 0;
+        document.getElementById('on6').innerText = st.on6 || 0;
+        document.getElementById('on7').innerText = st.on7 || 0;
+        document.getElementById('on8').innerText = st.on8 || 0;
+    }
+
     function showAdminLogin() {
         document.getElementById('studentView').classList.add('hidden');
         document.getElementById('adminLoginView').classList.remove('hidden');
+    }
+
+    function showStudentSearch() {
+        document.getElementById('adminLoginView').classList.add('hidden');
+        document.getElementById('adminDashboardView').classList.add('hidden');
+        document.getElementById('studentView').classList.remove('hidden');
+    }
+
+    function checkAdminPassword() {
+        let pass = document.getElementById('adminPass').value;
+        if (pass === ADMIN_PASSWORD) {
+            document.getElementById('adminLoginView').classList.add('hidden');
+            document.getElementById('adminDashboardView').classList.remove('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+        } else {
+            document.getElementById('loginError').classList.remove('hidden');
+        }
     }
 
     function onClassOrGroupChange() {
@@ -367,111 +450,20 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
         document.getElementById('admFinalGrade').value = "";
         document.getElementById('admL1').value = "";
         document.getElementById('admL2').value = "";
-                document.getElementById('admL3').value = "";
+        document.getElementById('admL3').value = "";
         document.getElementById('admL4').value = "";
     }
 
-    async function searchStudent() {
-        await loadCloudData();
-        await fetchSheetScores();
-        
-        const code = document.getElementById('studentCode').value.trim();
-        const errorDiv = document.getElementById('searchError');
-        const resultCard = document.getElementById('resultCard');
-
-        if (globalData && globalData[code]) {
-            const st = globalData[code];
-            document.getElementById('resCode').innerText = code;
-            document.getElementById('resName').innerText = st.name;
-            document.getElementById('resClass').innerText = st.grade;
-            document.getElementById('resGroup').innerText = st.group;
-            
-            let lastPaid = parseInt(st.paidMonth !== undefined ? st.paidMonth : (st.payment === 'unpaid' ? 0 : 1));
-            let payContainer = document.getElementById('resPaymentList');
-            payContainer.innerHTML = "";
-
-            if (lastPaid === 0) {
-                payContainer.innerHTML = `
-                    <div class="payment-status-item">
-                        <span>${monthNames[1]}</span>
-                        <span class="status-badge status-due">مستحق السداد ⚠️</span>
-                    </div>`;
-            } else {
-                for (let m = 1; m <= lastPaid; m++) {
-                    payContainer.innerHTML += `
-                        <div class="payment-status-item">
-                            <span>${monthNames[m]}</span>
-                            <span class="status-badge status-paid">تم السداد ✅</span>
-                        </div>`;
-                }
-                if (lastPaid < 8) {
-                    let nextMonth = lastPaid + 1;
-                    payContainer.innerHTML += `
-                        <div class="payment-status-item">
-                            <span>${monthNames[nextMonth]}</span>
-                            <span class="status-badge status-due">مستحق السداد ⚠️</span>
-                        </div>`;
-                }
-            }
-
-            document.getElementById('resFinalGrade').innerText = st.finalGrade || "-";
-            document.getElementById('resMonthlyExam').innerText = (st.monthlyExam || 0) + " / 50";
-            
-            document.getElementById('w1').innerText = st.w1 || 0;
-            document.getElementById('w2').innerText = st.w2 || 0;
-            document.getElementById('w3').innerText = st.w3 || 0;
-            document.getElementById('w4').innerText = st.w4 || 0;
-            document.getElementById('resWeeklyFinal').innerText = st.weeklyFinal || 0;
-
-            document.getElementById('resUnit').innerText = (st.unit || 0) + " / 20";
-
-            document.getElementById('l1').innerText = st.l1 || 0;
-            document.getElementById('l2').innerText = st.l2 || 0;
-            document.getElementById('l3').innerText = st.l3 || 0;
-            document.getElementById('l4').innerText = st.l4 || 0;
-
-            // أخذ الدرجة أوتوماتيكياً من شيت الجوجل بناءً على كود الطالب
-            let autoScore = sheetScores[code] !== undefined ? sheetScores[code] : 0;
-            document.getElementById('on1').innerText = autoScore;
-            document.getElementById('on2').innerText = st.on2 || 0;
-            document.getElementById('on3').innerText = st.on3 || 0;
-            document.getElementById('on4').innerText = st.on4 || 0;
-            document.getElementById('on5').innerText = st.on5 || 0;
-            document.getElementById('on6').innerText = st.on6 || 0;
-            document.getElementById('on7').innerText = st.on7 || 0;
-            document.getElementById('on8').innerText = st.on8 || 0;
-
-            errorDiv.classList.add('hidden');
-            resultCard.classList.remove('hidden');
-        } else {
-            resultCard.classList.add('hidden');
-            errorDiv.classList.remove('hidden');
-        }
-    }
-
-    function checkAdminPassword() {
-        const pass = document.getElementById('adminPass').value;
-        if (pass === ADMIN_PASSWORD) {
-            document.getElementById('adminLoginView').classList.add('hidden');
-            document.getElementById('adminDashboardView').classList.remove('hidden');
-            document.getElementById('loginError').classList.add('hidden');
-        } else {
-            document.getElementById('loginError').classList.remove('hidden');
-        }
-    }
-
-    function showStudentSearch() {
-        document.getElementById('studentView').classList.remove('hidden');
-        document.getElementById('adminLoginView').classList.add('hidden');
-        document.getElementById('adminDashboardView').classList.add('hidden');
-    }
-
     async function saveStudentData() {
-        const code = document.getElementById('admCode').value.trim();
+        let code = normalizeCode(document.getElementById('admCode').value);
         if (!code) {
-            alert("يرجى إدخال كود الطالب!");
+            alert("يرجى إدخال كود الطالب");
             return;
         }
+
+        let saveBtn = document.getElementById('saveBtn');
+        saveBtn.innerText = "جاري الحفظ... ⏳";
+        saveBtn.disabled = true;
 
         globalData[code] = {
             name: document.getElementById('admName').value,
@@ -493,7 +485,7 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
         };
 
         try {
-            let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -502,14 +494,14 @@ const SHEET_ID = "13g8DmyFSd2iOWijxHBwasYGGCA0HceIjpQh2eFQdAl8";
                 body: JSON.stringify(globalData)
             });
 
-            if (res.ok) {
-                const succ = document.getElementById('admSuccess');
-                succ.classList.remove('hidden');
-                setTimeout(() => succ.classList.add('hidden'), 3000);
-                renderGroupStudents();
-            }
+            document.getElementById('admSuccess').classList.remove('hidden');
+            setTimeout(() => document.getElementById('admSuccess').classList.add('hidden'), 3000);
+            renderGroupStudents();
         } catch (e) {
-            alert("حدث خطأ أثناء الحفظ سحابياً!");
+            alert("حدث خطأ أثناء الحفظ، يرجى المحاولة مرة أخرى.");
+        } finally {
+            saveBtn.innerText = "حفظ البيانات سحابياً ☁️";
+            saveBtn.disabled = false;
         }
     }
 </script>
