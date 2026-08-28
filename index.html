@@ -23,14 +23,12 @@
         .student-badge { background-color: var(--card-yellow); padding: 10px 15px; border-radius: 12px; text-align: center; }
         .tag { display: inline-block; background-color: var(--light-green); color: var(--primary-green); padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; }
         .tag.yellow { background-color: var(--card-yellow); }
-        
         .payment-box { margin-top: 15px; background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 12px; }
         .payment-status-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
         .payment-status-item:last-child { border-bottom: none; }
         .status-badge { padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size: 12px; }
         .status-paid { background-color: #d4edda; color: #155724; }
         .status-due { background-color: #fff3cd; color: #856404; }
-
         .score-box { background-color: var(--primary-green); color: white; border-radius: 18px; padding: 15px; text-align: center; margin-top: 15px; }
         .score-num { font-size: 32px; font-weight: 800; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -43,7 +41,6 @@
         .success-msg { color: #28a745; font-size: 13px; text-align: center; font-weight: bold; }
         .form-row { display: flex; gap: 10px; }
         .form-row input { flex: 1; }
-
         .student-list-container { max-height: 200px; overflow-y: auto; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; padding: 5px; background: #fdfdfd; }
         .student-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid #eee; }
         .student-list-item:last-child { border-bottom: none; }
@@ -232,7 +229,7 @@
     let sheetScores = {};
 
     function normalizeCode(str) {
-        if (!str) return "";
+        if (str === null || str === undefined) return "";
         return str.toString().trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
     }
 
@@ -249,22 +246,49 @@
     }
 
     async function fetchSheetScores() {
-        try {
-            let res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
-            let txt = await res.text();
-            let json = JSON.parse(txt.substring(47, txt.length - 2));
-            let rows = json.table.rows;
-            sheetScores = {};
+        const sheetNames = ['ردود النموذج 1', 'ردود النموذج 2', 'ردود النموذج 3', 'ردود النموذج 4', 'ردود النموذج 5'];
+        sheetScores = {};
 
-            rows.forEach(r => {
-                if (r.c && r.c[3] && r.c[3].v !== null && r.c[1] && r.c[1].v !== null) {
-                    let code = normalizeCode(r.c[3].v);
-                    let score = normalizeCode(r.c[1].v);
-                    if (code) sheetScores[code] = score;
-                }
-            });
-        } catch (e) {
-            console.error("خطأ في قراءة درجات الشيت", e);
+        for (let name of sheetNames) {
+            try {
+                let url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+                let res = await fetch(url);
+                let txt = await res.text();
+                
+                let jsonText = txt.substring(47, txt.length - 2);
+                let json = JSON.parse(jsonText);
+                let rows = json.table.rows;
+                let cols = json.table.cols;
+
+                let codeColIndex = -1;
+                let scoreColIndex = -1;
+
+                cols.forEach((col, idx) => {
+                    if (col && col.label) {
+                        let label = col.label.trim();
+                        if (label.includes('كود الطالب') || label.toLowerCase().includes('code')) codeColIndex = idx;
+                        if (label.includes('النتيجة') || label.toLowerCase().includes('score')) scoreColIndex = idx;
+                    }
+                });
+
+                if (codeColIndex === -1) codeColIndex = 1;
+                if (scoreColIndex === -1) scoreColIndex = 2;
+
+                rows.forEach(r => {
+                    if (r.c) {
+                        let rawCode = r.c[codeColIndex] ? (r.c[codeColIndex].v !== null ? r.c[codeColIndex].v : r.c[codeColIndex].f) : null;
+                        let rawScore = r.c[scoreColIndex] ? (r.c[scoreColIndex].v !== null ? r.c[scoreColIndex].v : r.c[scoreColIndex].f) : null;
+                        
+                        let code = normalizeCode(rawCode);
+                        if (code && rawScore !== null && rawScore !== undefined) {
+                            let scoreStr = String(rawScore).split('/')[0].trim();
+                            sheetScores[code] = scoreStr;
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("خطأ في قراءة تبويب الشيت:", name, e);
+            }
         }
     }
 
@@ -291,7 +315,6 @@
         document.getElementById('resClass').innerText = st.grade || "-";
         document.getElementById('resGroup').innerText = st.group || "-";
 
-        // السداد الشهري
         let payContainer = document.getElementById('resPaymentList');
         payContainer.innerHTML = "";
         let paidMonth = st.paidMonth !== undefined ? parseInt(st.paidMonth) : (st.payment === 'unpaid' ? 0 : 1);
@@ -306,7 +329,6 @@
         document.getElementById('resFinalGrade').innerText = st.finalGrade || "-";
         document.getElementById('resMonthlyExam').innerText = (st.monthlyExam || 0) + " / 50";
 
-        // إظهار درجة الشيت في أسبوع 1 وفي تدريب أونلاين ح1 معاً
         let sheetScore = sheetScores[inputCode];
         document.getElementById('w1').innerText = sheetScore !== undefined ? sheetScore : (st.w1 || 0);
         document.getElementById('w2').innerText = st.w2 || 0;
@@ -334,7 +356,8 @@
     function showAdminLogin() {
         document.getElementById('studentView').classList.add('hidden');
         document.getElementById('adminLoginView').classList.remove('hidden');
-    }
+        
+ }
 
     function showStudentSearch() {
         document.getElementById('adminLoginView').classList.add('hidden');
@@ -361,78 +384,126 @@
     function updateGroupOptions() {
         const classSelect = document.getElementById('admClass').value;
         const groupSelect = document.getElementById('admGroup');
-        const currentGroupVal = groupSelect.value;
         
         groupSelect.innerHTML = '<option value="">اختر المجموعة</option>';
         if (groupsByClass[classSelect]) {
             groupsByClass[classSelect].forEach(g => {
                 const opt = document.createElement('option');
-                opt.value = g; opt.textContent = g;
-                if (g === currentGroupVal) opt.selected = true;
+                opt.value = g;
+                opt.textContent = g;
                 groupSelect.appendChild(opt);
             });
         }
     }
 
     function renderGroupStudents() {
-        const selectedClass = document.getElementById('admClass').value;
-        const selectedGroup = document.getElementById('admGroup').value;
+        const classVal = document.getElementById('admClass').value;
+        const groupVal = document.getElementById('admGroup').value;
         const container = document.getElementById('groupStudentsContainer');
         const listDiv = document.getElementById('groupStudentsList');
 
-        if (!selectedClass || !selectedGroup) {
+        if (!classVal || !groupVal) {
             container.classList.add('hidden');
             return;
         }
 
         listDiv.innerHTML = "";
-        let foundAny = false;
+        let found = false;
 
-        for (let code in globalData) {
+        Object.keys(globalData).forEach(code => {
             let st = globalData[code];
-            if (st.grade === selectedClass && st.group === selectedGroup) {
-                foundAny = true;
+            if (st.grade === classVal && st.group === groupVal) {
+                found = true;
                 let item = document.createElement('div');
                 item.className = 'student-list-item';
                 item.innerHTML = `
-                    <div class="student-info-text">${st.name} <span style="color:#777; font-size:11px;">(#${code})</span></div>
-                    <button class="btn-sm" onclick="editStudentByCode('${code}')">تعديل ✏️</button>
+                    <span class="student-info-text">${st.name || 'بدون اسم'} (${code})</span>
+                    <button class="btn-sm" onclick="loadStudentToForm('${code}')">تعديل</button>
                 `;
                 listDiv.appendChild(item);
             }
-        }
+        });
 
-        if (foundAny) {
+        if (found) {
             container.classList.remove('hidden');
         } else {
-            listDiv.innerHTML = '<div style="text-align:center; font-size:12px; color:#888; padding:8px;">لا يوجد طلاب مسجلين في هذه المجموعة حالياً</div>';
-            container.classList.remove('hidden');
+            container.classList.add('hidden');
         }
     }
 
-    function editStudentByCode(code) {
-        if (globalData && globalData[code]) {
-            const st = globalData[code];
-            document.getElementById('admCode').value = code;
-            document.getElementById('admName').value = st.name || "";
-            document.getElementById('admClass').value = st.grade || "";
-            updateGroupOptions();
-            document.getElementById('admGroup').value = st.group || "";
-            document.getElementById('admPaidMonth').value = st.paidMonth !== undefined ? st.paidMonth : (st.payment === 'unpaid' ? 0 : 1);
-            document.getElementById('admW1').value = st.w1 || "";
-            document.getElementById('admW2').value = st.w2 || "";
-            document.getElementById('admW3').value = st.w3 || "";
-            document.getElementById('admW4').value = st.w4 || "";
-            document.getElementById('admWeeklyFinal').value = st.weeklyFinal || "";
-            document.getElementById('admUnit').value = st.unit || "";
-            document.getElementById('admMonthlyExam').value = st.monthlyExam || "";
-            document.getElementById('admFinalGrade').value = st.finalGrade || "";
-            document.getElementById('admL1').value = st.l1 || "";
-            document.getElementById('admL2').value = st.l2 || "";
-            document.getElementById('admL3').value = st.l3 || "";
-            document.getElementById('admL4').value = st.l4 || "";
+    function loadStudentToForm(code) {
+        let st = globalData[code];
+        if (!st) return;
 
-            window.scrollTo({ top: document.getElementById('admCode').offsetTop - 100, behavior: 'smooth' });
+        document.getElementById('admCode').value = code;
+        document.getElementById('admName').value = st.name || "";
+        document.getElementById('admPaidMonth').value = st.paidMonth !== undefined ? st.paidMonth : 0;
+        document.getElementById('admW1').value = st.w1 || "";
+        document.getElementById('admW2').value = st.w2 || "";
+        document.getElementById('admW3').value = st.w3 || "";
+        document.getElementById('admW4').value = st.w4 || "";
+        document.getElementById('admWeeklyFinal').value = st.weeklyFinal || "";
+        document.getElementById('admUnit').value = st.unit || "";
+        document.getElementById('admMonthlyExam').value = st.monthlyExam || "";
+        document.getElementById('admFinalGrade').value = st.finalGrade || "";
+        document.getElementById('admL1').value = st.l1 || "";
+        document.getElementById('admL2').value = st.l2 || "";
+        document.getElementById('admL3').value = st.l3 || "";
+        document.getElementById('admL4').value = st.l4 || "";
+    }
+
+    async function saveStudentData() {
+        let code = normalizeCode(document.getElementById('admCode').value);
+        if (!code) {
+            alert("يرجى إدخال كود الطالب أولاً!");
+            return;
+        }
+
+        let currentClass = document.getElementById('admClass').value;
+        let currentGroup = document.getElementById('admGroup').value;
+
+        globalData[code] = {
+            name: document.getElementById('admName').value,
+            grade: currentClass || (globalData[code] ? globalData[code].grade : ""),
+            group: currentGroup || (globalData[code] ? globalData[code].group : ""),
+            paidMonth: parseInt(document.getElementById('admPaidMonth').value),
+            w1: document.getElementById('admW1').value,
+            w2: document.getElementById('admW2').value,
+            w3: document.getElementById('admW3').value,
+            w4: document.getElementById('admW4').value,
+            weeklyFinal: document.getElementById('admWeeklyFinal').value,
+            unit: document.getElementById('admUnit').value,
+            monthlyExam: document.getElementById('admMonthlyExam').value,
+            finalGrade: document.getElementById('admFinalGrade').value,
+            l1: document.getElementById('admL1').value,
+            l2: document.getElementById('admL2').value,
+            l3: document.getElementById('admL3').value,
+            l4: document.getElementById('admL4').value
+        };
+
+        let saveBtn = document.getElementById('saveBtn');
+        saveBtn.innerText = "جاري الحفظ... ⏳";
+        saveBtn.disabled = true;
+
+        try {
+            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': API_KEY
+                },
+                body: JSON.stringify(globalData)
+            });
+
+            document.getElementById('admSuccess').classList.remove('hidden');
+            setTimeout(() => document.getElementById('admSuccess').classList.add('hidden'), 3000);
+            renderGroupStudents();
+        } catch (e) {
+            alert("حدث خطأ أثناء حفظ البيانات!");
+            console.error(e);
+        } finally {
+            saveBtn.innerText = "حفظ البيانات سحابياً ☁️";
+            saveBtn.disabled = false;
         }
     }
 
@@ -453,57 +524,6 @@
         document.getElementById('admL3').value = "";
         document.getElementById('admL4').value = "";
     }
-
-    async function saveStudentData() {
-        let code = normalizeCode(document.getElementById('admCode').value);
-        if (!code) {
-            alert("يرجى إدخال كود الطالب");
-            return;
-        }
-
-        let saveBtn = document.getElementById('saveBtn');
-        saveBtn.innerText = "جاري الحفظ... ⏳";
-        saveBtn.disabled = true;
-
-        globalData[code] = {
-            name: document.getElementById('admName').value,
-            grade: document.getElementById('admClass').value,
-            group: document.getElementById('admGroup').value,
-            paidMonth: parseInt(document.getElementById('admPaidMonth').value),
-            w1: document.getElementById('admW1').value,
-            w2: document.getElementById('admW2').value,
-            w3: document.getElementById('admW3').value,
-            w4: document.getElementById('admW4').value,
-            weeklyFinal: document.getElementById('admWeeklyFinal').value,
-            unit: document.getElementById('admUnit').value,
-            monthlyExam: document.getElementById('admMonthlyExam').value,
-            finalGrade: document.getElementById('admFinalGrade').value,
-            l1: document.getElementById('admL1').value,
-            l2: document.getElementById('admL2').value,
-            l3: document.getElementById('admL3').value,
-            l4: document.getElementById('admL4').value
-        };
-
-        try {
-            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Master-Key": API_KEY
-                },
-                body: JSON.stringify(globalData)
-            });
-
-            document.getElementById('admSuccess').classList.remove('hidden');
-            setTimeout(() => document.getElementById('admSuccess').classList.add('hidden'), 3000);
-            renderGroupStudents();
-        } catch (e) {
-            alert("حدث خطأ أثناء الحفظ، يرجى المحاولة مرة أخرى.");
-        } finally {
-            saveBtn.innerText = "حفظ البيانات سحابياً ☁️";
-            saveBtn.disabled = false;
-        }
-    }
 </script>
 </body>
-</html>
+</htm
